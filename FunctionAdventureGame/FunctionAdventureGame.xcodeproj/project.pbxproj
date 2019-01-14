@@ -1,0 +1,523 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8032149221A8C62700A21713 /* GameSuccessScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8032149121A8C62700A21713 /* GameSuccessScene.sks */; };
+		8032149421A8C86600A21713 /* GameSuccessScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8032149321A8C86600A21713 /* GameSuccessScene.swift */; };
+		8036C91D21B4ED7600A7BBC0 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8036C91C21B4ED7600A7BBC0 /* Sound.swift */; };
+		8036C92521B4F71500A7BBC0 /* jumpSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C91E21B4F71300A7BBC0 /* jumpSound.wav */; };
+		8036C92621B4F71500A7BBC0 /* rewardSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C91F21B4F71400A7BBC0 /* rewardSound.wav */; };
+		8036C92721B4F71500A7BBC0 /* hitSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C92021B4F71400A7BBC0 /* hitSound.wav */; };
+		8036C92821B4F71500A7BBC0 /* levelUpSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C92121B4F71400A7BBC0 /* levelUpSound.wav */; };
+		8036C92921B4F71500A7BBC0 /* music.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C92221B4F71400A7BBC0 /* music.wav */; };
+		8036C92A21B4F71500A7BBC0 /* meteorFallingSound.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 8036C92321B4F71400A7BBC0 /* meteorFallingSound.m4a */; };
+		8036C92B21B4F71500A7BBC0 /* meteorFallingSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C92421B4F71500A7BBC0 /* meteorFallingSound.wav */; };
+		8036C93221B571C800A7BBC0 /* AchievementScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8036C93121B571C800A7BBC0 /* AchievementScene.sks */; };
+		8036C93521B571FE00A7BBC0 /* AchievementScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8036C93421B571FE00A7BBC0 /* AchievementScene.swift */; };
+		805170AC21BCAE1100E6C2D4 /* levelRecord.plist in Resources */ = {isa = PBXBuildFile; fileRef = 805170AB21BCAE1100E6C2D4 /* levelRecord.plist */; };
+		8060DAB8217D35DE007D29F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8060DAB7217D35DE007D29F6 /* AppDelegate.swift */; };
+		8060DABC217D35DE007D29F6 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8060DABB217D35DE007D29F6 /* Actions.sks */; };
+		8060DAC0217D35DE007D29F6 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8060DABF217D35DE007D29F6 /* GameViewController.swift */; };
+		8060DAC3217D35DE007D29F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8060DAC1217D35DE007D29F6 /* Main.storyboard */; };
+		8060DAC8217D35E1007D29F6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8060DAC6217D35E1007D29F6 /* LaunchScreen.storyboard */; };
+		807316D92190FBAC00E3E943 /* AdventureScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 807316D82190FBAC00E3E943 /* AdventureScene.sks */; };
+		807316DB2190FBC100E3E943 /* AdventureScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 807316DA2190FBC100E3E943 /* AdventureScene.swift */; };
+		8077D2BF21EBAB2F00FC165B /* playerStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8077D2BE21EBAB2F00FC165B /* playerStateMachine.swift */; };
+		80C8202B21AC3AEE00DF09D0 /* GameOverScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 80C8202A21AC3AEE00DF09D0 /* GameOverScene.sks */; };
+		80C8202D21AC3B0500DF09D0 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C8202C21AC3B0500DF09D0 /* GameOverScene.swift */; };
+		80DE8A3B2199CA4300730B8F /* GameLevelScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 80DE8A3A2199CA4300730B8F /* GameLevelScene.sks */; };
+		80DE8A3D2199CA6100730B8F /* GameLevelScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80DE8A3C2199CA6100730B8F /* GameLevelScene.swift */; };
+		80E0D9D421EA4B6A00A3055B /* AdventureScene3.sks in Resources */ = {isa = PBXBuildFile; fileRef = 80E0D9D321EA4B6A00A3055B /* AdventureScene3.sks */; };
+		80E0D9D621EA4B7F00A3055B /* AdventureScene3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E0D9D521EA4B7F00A3055B /* AdventureScene3.swift */; };
+		80E21BC821CD98FF0008BEAD /* AdventureScene2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 80E21BC721CD98FF0008BEAD /* AdventureScene2.sks */; };
+		80E21BCA21CD991B0008BEAD /* AdventureScene2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E21BC921CD991B0008BEAD /* AdventureScene2.swift */; };
+		80E21BCD21D031310008BEAD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80E21BCC21D031310008BEAD /* Assets.xcassets */; };
+		80ED1AE22190969B008FAE7C /* MenuScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 80ED1AE12190969B008FAE7C /* MenuScene.sks */; };
+		80ED1AE4219097A4008FAE7C /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80ED1AE3219097A4008FAE7C /* MenuScene.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8032149121A8C62700A21713 /* GameSuccessScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameSuccessScene.sks; sourceTree = "<group>"; };
+		8032149321A8C86600A21713 /* GameSuccessScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSuccessScene.swift; sourceTree = "<group>"; };
+		8036C91C21B4ED7600A7BBC0 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
+		8036C91E21B4F71300A7BBC0 /* jumpSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jumpSound.wav; sourceTree = "<group>"; };
+		8036C91F21B4F71400A7BBC0 /* rewardSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = rewardSound.wav; sourceTree = "<group>"; };
+		8036C92021B4F71400A7BBC0 /* hitSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hitSound.wav; sourceTree = "<group>"; };
+		8036C92121B4F71400A7BBC0 /* levelUpSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = levelUpSound.wav; sourceTree = "<group>"; };
+		8036C92221B4F71400A7BBC0 /* music.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = music.wav; sourceTree = "<group>"; };
+		8036C92321B4F71400A7BBC0 /* meteorFallingSound.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = meteorFallingSound.m4a; sourceTree = "<group>"; };
+		8036C92421B4F71500A7BBC0 /* meteorFallingSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = meteorFallingSound.wav; sourceTree = "<group>"; };
+		8036C93121B571C800A7BBC0 /* AchievementScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AchievementScene.sks; sourceTree = "<group>"; };
+		8036C93421B571FE00A7BBC0 /* AchievementScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementScene.swift; sourceTree = "<group>"; };
+		805170AB21BCAE1100E6C2D4 /* levelRecord.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = levelRecord.plist; sourceTree = "<group>"; };
+		8060DAB4217D35DE007D29F6 /* FunctionAdventureGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FunctionAdventureGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8060DAB7217D35DE007D29F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8060DABB217D35DE007D29F6 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
+		8060DABF217D35DE007D29F6 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		8060DAC2217D35DE007D29F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8060DAC7217D35E1007D29F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8060DAC9217D35E1007D29F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		807316D82190FBAC00E3E943 /* AdventureScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AdventureScene.sks; sourceTree = "<group>"; };
+		807316DA2190FBC100E3E943 /* AdventureScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureScene.swift; sourceTree = "<group>"; };
+		8077D2BE21EBAB2F00FC165B /* playerStateMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playerStateMachine.swift; sourceTree = "<group>"; };
+		80C8202A21AC3AEE00DF09D0 /* GameOverScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameOverScene.sks; sourceTree = "<group>"; };
+		80C8202C21AC3B0500DF09D0 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		80DE8A3A2199CA4300730B8F /* GameLevelScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameLevelScene.sks; sourceTree = "<group>"; };
+		80DE8A3C2199CA6100730B8F /* GameLevelScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLevelScene.swift; sourceTree = "<group>"; };
+		80E0D9D321EA4B6A00A3055B /* AdventureScene3.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AdventureScene3.sks; sourceTree = "<group>"; };
+		80E0D9D521EA4B7F00A3055B /* AdventureScene3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureScene3.swift; sourceTree = "<group>"; };
+		80E21BC721CD98FF0008BEAD /* AdventureScene2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AdventureScene2.sks; sourceTree = "<group>"; };
+		80E21BC921CD991B0008BEAD /* AdventureScene2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureScene2.swift; sourceTree = "<group>"; };
+		80E21BCC21D031310008BEAD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		80ED1AE12190969B008FAE7C /* MenuScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MenuScene.sks; sourceTree = "<group>"; };
+		80ED1AE3219097A4008FAE7C /* MenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8060DAB1217D35DE007D29F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8032149521A8D2F500A21713 /* GameSuccessScene */ = {
+			isa = PBXGroup;
+			children = (
+				8032149121A8C62700A21713 /* GameSuccessScene.sks */,
+				8032149321A8C86600A21713 /* GameSuccessScene.swift */,
+			);
+			path = GameSuccessScene;
+			sourceTree = "<group>";
+		};
+		8036C92C21B4F73500A7BBC0 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				8036C92021B4F71400A7BBC0 /* hitSound.wav */,
+				8036C91E21B4F71300A7BBC0 /* jumpSound.wav */,
+				8036C92121B4F71400A7BBC0 /* levelUpSound.wav */,
+				8036C92321B4F71400A7BBC0 /* meteorFallingSound.m4a */,
+				8036C92421B4F71500A7BBC0 /* meteorFallingSound.wav */,
+				8036C92221B4F71400A7BBC0 /* music.wav */,
+				8036C91F21B4F71400A7BBC0 /* rewardSound.wav */,
+			);
+			path = audio;
+			sourceTree = "<group>";
+		};
+		8036C93321B571D700A7BBC0 /* AchievementScene */ = {
+			isa = PBXGroup;
+			children = (
+				8036C93121B571C800A7BBC0 /* AchievementScene.sks */,
+				8036C93421B571FE00A7BBC0 /* AchievementScene.swift */,
+			);
+			path = AchievementScene;
+			sourceTree = "<group>";
+		};
+		8060DAAB217D35DE007D29F6 = {
+			isa = PBXGroup;
+			children = (
+				8060DAB6217D35DE007D29F6 /* FunctionAdventureGame */,
+				8060DAB5217D35DE007D29F6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8060DAB5217D35DE007D29F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8060DAB4217D35DE007D29F6 /* FunctionAdventureGame.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8060DAB6217D35DE007D29F6 /* FunctionAdventureGame */ = {
+			isa = PBXGroup;
+			children = (
+				8060DAB7217D35DE007D29F6 /* AppDelegate.swift */,
+				807316D62190FA3800E3E943 /* MenuScene */,
+				80DE8A3E2199CA6A00730B8F /* GameLevelScene */,
+				8036C93321B571D700A7BBC0 /* AchievementScene */,
+				80E0D9D721EA4B8800A3055B /* AdventureScene3 */,
+				80E21BCB21CD99220008BEAD /* AdventureScene2 */,
+				807316D72190FA4900E3E943 /* AdventureScene */,
+				80C8202E21AC3B0E00DF09D0 /* GameOverScene */,
+				8032149521A8D2F500A21713 /* GameSuccessScene */,
+				8060DABB217D35DE007D29F6 /* Actions.sks */,
+				8036C91C21B4ED7600A7BBC0 /* Sound.swift */,
+				8036C92C21B4F73500A7BBC0 /* audio */,
+				80E21BCC21D031310008BEAD /* Assets.xcassets */,
+				8060DABF217D35DE007D29F6 /* GameViewController.swift */,
+				8060DAC1217D35DE007D29F6 /* Main.storyboard */,
+				8060DAC6217D35E1007D29F6 /* LaunchScreen.storyboard */,
+				8060DAC9217D35E1007D29F6 /* Info.plist */,
+				805170AB21BCAE1100E6C2D4 /* levelRecord.plist */,
+			);
+			path = FunctionAdventureGame;
+			sourceTree = "<group>";
+		};
+		807316D62190FA3800E3E943 /* MenuScene */ = {
+			isa = PBXGroup;
+			children = (
+				80ED1AE12190969B008FAE7C /* MenuScene.sks */,
+				80ED1AE3219097A4008FAE7C /* MenuScene.swift */,
+			);
+			path = MenuScene;
+			sourceTree = "<group>";
+		};
+		807316D72190FA4900E3E943 /* AdventureScene */ = {
+			isa = PBXGroup;
+			children = (
+				807316D82190FBAC00E3E943 /* AdventureScene.sks */,
+				807316DA2190FBC100E3E943 /* AdventureScene.swift */,
+			);
+			path = AdventureScene;
+			sourceTree = "<group>";
+		};
+		80C8202E21AC3B0E00DF09D0 /* GameOverScene */ = {
+			isa = PBXGroup;
+			children = (
+				80C8202A21AC3AEE00DF09D0 /* GameOverScene.sks */,
+				80C8202C21AC3B0500DF09D0 /* GameOverScene.swift */,
+			);
+			path = GameOverScene;
+			sourceTree = "<group>";
+		};
+		80DE8A3E2199CA6A00730B8F /* GameLevelScene */ = {
+			isa = PBXGroup;
+			children = (
+				80DE8A3A2199CA4300730B8F /* GameLevelScene.sks */,
+				80DE8A3C2199CA6100730B8F /* GameLevelScene.swift */,
+			);
+			path = GameLevelScene;
+			sourceTree = "<group>";
+		};
+		80E0D9D721EA4B8800A3055B /* AdventureScene3 */ = {
+			isa = PBXGroup;
+			children = (
+				80E0D9D321EA4B6A00A3055B /* AdventureScene3.sks */,
+				80E0D9D521EA4B7F00A3055B /* AdventureScene3.swift */,
+				8077D2BE21EBAB2F00FC165B /* playerStateMachine.swift */,
+			);
+			path = AdventureScene3;
+			sourceTree = "<group>";
+		};
+		80E21BCB21CD99220008BEAD /* AdventureScene2 */ = {
+			isa = PBXGroup;
+			children = (
+				80E21BC721CD98FF0008BEAD /* AdventureScene2.sks */,
+				80E21BC921CD991B0008BEAD /* AdventureScene2.swift */,
+			);
+			path = AdventureScene2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8060DAB3217D35DE007D29F6 /* FunctionAdventureGame */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8060DACC217D35E1007D29F6 /* Build configuration list for PBXNativeTarget "FunctionAdventureGame" */;
+			buildPhases = (
+				8060DAB0217D35DE007D29F6 /* Sources */,
+				8060DAB1217D35DE007D29F6 /* Frameworks */,
+				8060DAB2217D35DE007D29F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FunctionAdventureGame;
+			productName = FunctionAdventureGame;
+			productReference = 8060DAB4217D35DE007D29F6 /* FunctionAdventureGame.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8060DAAC217D35DE007D29F6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1000;
+				LastUpgradeCheck = 1000;
+				ORGANIZATIONNAME = "Xuan Liu";
+				TargetAttributes = {
+					8060DAB3217D35DE007D29F6 = {
+						CreatedOnToolsVersion = 10.0;
+					};
+				};
+			};
+			buildConfigurationList = 8060DAAF217D35DE007D29F6 /* Build configuration list for PBXProject "FunctionAdventureGame" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8060DAAB217D35DE007D29F6;
+			productRefGroup = 8060DAB5217D35DE007D29F6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8060DAB3217D35DE007D29F6 /* FunctionAdventureGame */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8060DAB2217D35DE007D29F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8060DAC3217D35DE007D29F6 /* Main.storyboard in Resources */,
+				805170AC21BCAE1100E6C2D4 /* levelRecord.plist in Resources */,
+				807316D92190FBAC00E3E943 /* AdventureScene.sks in Resources */,
+				80DE8A3B2199CA4300730B8F /* GameLevelScene.sks in Resources */,
+				8036C92B21B4F71500A7BBC0 /* meteorFallingSound.wav in Resources */,
+				8032149221A8C62700A21713 /* GameSuccessScene.sks in Resources */,
+				80ED1AE22190969B008FAE7C /* MenuScene.sks in Resources */,
+				80E21BC821CD98FF0008BEAD /* AdventureScene2.sks in Resources */,
+				8036C92A21B4F71500A7BBC0 /* meteorFallingSound.m4a in Resources */,
+				80E0D9D421EA4B6A00A3055B /* AdventureScene3.sks in Resources */,
+				80E21BCD21D031310008BEAD /* Assets.xcassets in Resources */,
+				8036C92921B4F71500A7BBC0 /* music.wav in Resources */,
+				8036C93221B571C800A7BBC0 /* AchievementScene.sks in Resources */,
+				8060DAC8217D35E1007D29F6 /* LaunchScreen.storyboard in Resources */,
+				8036C92821B4F71500A7BBC0 /* levelUpSound.wav in Resources */,
+				8036C92621B4F71500A7BBC0 /* rewardSound.wav in Resources */,
+				80C8202B21AC3AEE00DF09D0 /* GameOverScene.sks in Resources */,
+				8036C92521B4F71500A7BBC0 /* jumpSound.wav in Resources */,
+				8036C92721B4F71500A7BBC0 /* hitSound.wav in Resources */,
+				8060DABC217D35DE007D29F6 /* Actions.sks in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8060DAB0217D35DE007D29F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8032149421A8C86600A21713 /* GameSuccessScene.swift in Sources */,
+				80E0D9D621EA4B7F00A3055B /* AdventureScene3.swift in Sources */,
+				8077D2BF21EBAB2F00FC165B /* playerStateMachine.swift in Sources */,
+				80ED1AE4219097A4008FAE7C /* MenuScene.swift in Sources */,
+				80C8202D21AC3B0500DF09D0 /* GameOverScene.swift in Sources */,
+				8036C93521B571FE00A7BBC0 /* AchievementScene.swift in Sources */,
+				80E21BCA21CD991B0008BEAD /* AdventureScene2.swift in Sources */,
+				80DE8A3D2199CA6100730B8F /* GameLevelScene.swift in Sources */,
+				8060DAC0217D35DE007D29F6 /* GameViewController.swift in Sources */,
+				8060DAB8217D35DE007D29F6 /* AppDelegate.swift in Sources */,
+				807316DB2190FBC100E3E943 /* AdventureScene.swift in Sources */,
+				8036C91D21B4ED7600A7BBC0 /* Sound.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8060DAC1217D35DE007D29F6 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8060DAC2217D35DE007D29F6 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		8060DAC6217D35E1007D29F6 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8060DAC7217D35E1007D29F6 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8060DACA217D35E1007D29F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8060DACB217D35E1007D29F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8060DACD217D35E1007D29F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U3465V32BF;
+				INFOPLIST_FILE = FunctionAdventureGame/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.xuanliu.FunctionAdventureGame;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		8060DACE217D35E1007D29F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U3465V32BF;
+				INFOPLIST_FILE = FunctionAdventureGame/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.xuanliu.FunctionAdventureGame;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8060DAAF217D35DE007D29F6 /* Build configuration list for PBXProject "FunctionAdventureGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8060DACA217D35E1007D29F6 /* Debug */,
+				8060DACB217D35E1007D29F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8060DACC217D35E1007D29F6 /* Build configuration list for PBXNativeTarget "FunctionAdventureGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8060DACD217D35E1007D29F6 /* Debug */,
+				8060DACE217D35E1007D29F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8060DAAC217D35DE007D29F6 /* Project object */;
+}
