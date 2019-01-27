@@ -23,12 +23,16 @@ class AdventureScene: SKScene {
     var replayButtonNode: SKNode?
     var endZoneNodeRight: SKNode?
     var endZoneNodeUp: SKNode?
+    var functionLabel = SKLabelNode()
     
     var path = CGMutablePath()
     let shape = SKShapeNode()
     let xCoordinate = SKShapeNode()
     let yCoordinate = SKShapeNode()
     let lineShape = SKShapeNode()
+    var circleX = SKShapeNode()
+    var circleY = SKShapeNode()
+
     
     var countdownLabel = SKLabelNode()
     var timeCounterLabel: SKLabelNode!
@@ -117,17 +121,27 @@ class AdventureScene: SKScene {
         countdownLabel.zPosition = 6
         self.addChild(countdownLabel)
         countdown(count: 3)
-        
+
 //        startTime = Date().timeIntervalSinceReferenceDate
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
         isPlaying = true
+        
+        functionLabel.horizontalAlignmentMode = .center
+        functionLabel.verticalAlignmentMode = .center
+        functionLabel.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/5 * 2)
+        functionLabel.fontName = "AvenirNext"
+        functionLabel.fontColor = SKColor.black
+        functionLabel.fontSize = 20
+        functionLabel.text = "Linear Function"
+        functionLabel.zPosition = 6
+        self.addChild(functionLabel)
         
         shape.path = UIBezierPath(rect: CGRect(x: -self.frame.size.width/6, y: -self.frame.size.height/6, width: self.frame.size.width/3, height: self.frame.size.height/3)).cgPath
         shape.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/5)
 //        shape.fillColor = UIColor.red
         shape.alpha = 0.5
         shape.strokeColor = UIColor.black
-        shape.lineWidth = 5
+        shape.lineWidth = 2
         self.addChild(shape)
         
         path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
@@ -138,15 +152,29 @@ class AdventureScene: SKScene {
         arrowX.addArrow(start: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), end: CGPoint(x: self.frame.size.width/6 + 40, y: -self.frame.size.height/6 + self.frame.size.height/30 - 20), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
         xCoordinate.path = arrowX.cgPath
         xCoordinate.strokeColor = UIColor.black
-        xCoordinate.lineWidth = 5
+        xCoordinate.lineWidth = 2
         self.addChild(xCoordinate)
         
         let arrowY = UIBezierPath()
         arrowY.addArrow(start: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), end: CGPoint(x: self.frame.size.width/2 - 20, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
         yCoordinate.path = arrowY.cgPath
         yCoordinate.strokeColor = UIColor.black
-        yCoordinate.lineWidth = 5
+        yCoordinate.lineWidth = 2
         self.addChild(yCoordinate)
+        
+        circleX = SKShapeNode(circleOfRadius: 2) // Size of Circle
+        circleX.position = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+        circleX.strokeColor = UIColor.red
+        circleX.fillColor = UIColor.red
+        circleX.glowWidth = 1.0
+        self.addChild(circleX)
+        
+        circleY = SKShapeNode(circleOfRadius: 2) // Size of Circle
+        circleY.position = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+        circleY.strokeColor = UIColor.red
+        circleY.fillColor = UIColor.red
+        circleY.glowWidth = 1.0
+        self.addChild(circleY)
     }
 }
 
@@ -279,6 +307,7 @@ extension AdventureScene{
 //        print("go to gameoverScene")
         let gameOverScene = GameOverScene(fileNamed: "GameOverScene")
         gameOverScene?.scaleMode = .aspectFill
+        gameOverScene?.level = 0
         self.view?.presentScene(gameOverScene!)
     }
     
@@ -354,16 +383,17 @@ extension AdventureScene{
             let move = SKAction.move(by: displacement, duration: 0)
             playerNboat?.run(move)
             
-            
             path.addLine(to: CGPoint(x: currentLocation.x + displacement.dx/3, y: currentLocation.y + displacement.dy/3))
             path.move(to: CGPoint(x: currentLocation.x + displacement.dx/3, y: currentLocation.y + displacement.dy/3))
+            
+            circleX.run(SKAction.move(to: CGPoint(x: currentLocation.x + displacement.dx/3, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), duration: 0))
+            circleY.run(SKAction.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: currentLocation.y + displacement.dy/3), duration: 0))
+            
             currentLocation = CGPoint(x:currentLocation.x + displacement.dx/3, y:currentLocation.y + displacement.dy/3)
             
             lineShape.path = path
             lineShape.strokeColor = UIColor.black
-            lineShape.lineWidth = 5
-//            CGPathMoveToPoint(path, NULL, 100, 100)
-//            CGPathAddLineToPoint(path, NULL, 500, 500)
+            lineShape.lineWidth = 2
         }
     }
 }
@@ -419,7 +449,7 @@ extension AdventureScene: SKPhysicsContactDelegate{
         let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
         gameSuccessScene?.scaleMode = .aspectFill
         gameSuccessScene!.performanceLevel = self.heartsArray.count
-        gameSuccessScene!.level = 1
+        gameSuccessScene!.level = 0
         self.view?.presentScene(gameSuccessScene!)
     }
     

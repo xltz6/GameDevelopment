@@ -116,10 +116,10 @@ class StunnedState: PlayerState{
     
     let action = SKAction.repeat(.sequence([
         .fadeAlpha(to: 0.5, duration: 0.01),
-        .wait(forDuration: 0.25),
+        .wait(forDuration: 0.24),
         .fadeAlpha(to: 1.0, duration: 0.01),
-        .wait(forDuration: 0.25),
-        ]), count: 5)
+        .wait(forDuration: 0.24),
+        ]), count: 3)
     
     override func didEnter(from previousState: GKState?) {
         isStunned = true

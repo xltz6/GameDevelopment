@@ -10,10 +10,6 @@ import UIKit
 import GameplayKit
 
 class AdventureScene2: SKScene, SKPhysicsContactDelegate{
-//    var mountainLeftNode: SKSpriteNode!
-//    var mountainRightNode: SKSpriteNode!
-//    var backgroundAdventure2: SKSpriteNode!
-//    var characterNode: SKSpriteNode!
     var mountainLeftNode: SKNode?
     var mountainRightNode: SKNode?
     var backgroundAdventure2: SKNode?
@@ -28,6 +24,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     var speedBarNode: SKNode?
     var speedButtonNode: SKNode?
     var endZoneNode: SKNode?
+    var functionLabel = SKLabelNode()
     
 //    var cameraNode: SKCameraNode?
     var timeCounterLabel: SKLabelNode!
@@ -56,6 +53,8 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     let yCoordinate = SKShapeNode()
     let lineShape = SKShapeNode()
     var currentLocation = CGPoint(x:0,y:0)
+    var circleX = SKShapeNode()
+    var circleY = SKShapeNode()
     
     // Obtain the object reference of the App Delegate object
     let applicationDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -120,15 +119,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         angle = CGFloat(Double.random(in: 3.14/18..<3.14/4))
         mountainLeftNode?.zRotation = angle
         mountainRightNode?.zRotation = -angle
-//        if mountainLeftNode!.frame.size.height/2 - mountainLeftNode!.frame.size.width/2 * tan(angle) <= 0 {
-//            mountainLeftNode!.position = CGPoint(x: mountainLeftNode!.frame.size.width/2 * cos(angle) - self.frame.size.width/2, y: 0)
-//        }
-//        else{
-//            mountainLeftNode!.position = CGPoint(x: mountainLeftNode!.frame.size.width/2 * cos(angle) - self.frame.size.width/2, y: -(mountainLeftNode!.frame.size.height/2 - mountainLeftNode!.frame.size.width/2 * tan(angle)) * cos(angle))
-//        }
-//        mountainRightNode!.position = CGPoint(x: 50, y: mountainLeftNode!.frame.size.width * sin(angle))
-//        characterNode?.position = CGPoint(x: mountainLeftNode!.frame.size.width * cos(angle) - characterNode!.frame.size.width/2 - self.frame.size.width/2, y: mountainLeftNode!.frame.size.width * sin(angle))
-        
+
         
         endZoneNode = self.childNode(withName: "endzone")
         endZoneNode?.physicsBody = SKPhysicsBody(rectangleOf: endZoneNode!.frame.size)
@@ -138,7 +129,6 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         endZoneNode?.physicsBody?.collisionBitMask = characterCategory
         endZoneNode?.physicsBody?.isDynamic = false
         
-//        endZoneUpNode = self.childNode(withName: "endzone2")
         backButtonNode = self.childNode(withName: "backButton")
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
         backButtonNode?.zPosition = 2
@@ -184,12 +174,22 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         speedNode!.run(repeatAction2)
         
         
+        functionLabel.horizontalAlignmentMode = .center
+        functionLabel.verticalAlignmentMode = .center
+        functionLabel.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/5 * 2)
+        functionLabel.fontName = "AvenirNext"
+        functionLabel.fontColor = SKColor.black
+        functionLabel.fontSize = 20
+        functionLabel.text = "Quadratic Function"
+        functionLabel.zPosition = 6
+        self.addChild(functionLabel)
+        
         shape.path = UIBezierPath(rect: CGRect(x: -self.frame.size.width/6, y: -self.frame.size.height/6, width: self.frame.size.width/3, height: self.frame.size.height/3)).cgPath
         shape.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/5)
         //        shape.fillColor = UIColor.red
         shape.alpha = 0.5
         shape.strokeColor = UIColor.black
-        shape.lineWidth = 5
+        shape.lineWidth = 2
         shape.zPosition = 5
         self.addChild(shape)
         
@@ -202,7 +202,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         arrowX.addArrow2(start: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), end: CGPoint(x: self.frame.size.width/6 + 40, y: -self.frame.size.height/6 + self.frame.size.height/30 - 20), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
         xCoordinate.path = arrowX.cgPath
         xCoordinate.strokeColor = UIColor.black
-        xCoordinate.lineWidth = 5
+        xCoordinate.lineWidth = 2
         xCoordinate.zPosition = 5
         self.addChild(xCoordinate)
         
@@ -210,10 +210,25 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         arrowY.addArrow2(start: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), end: CGPoint(x: self.frame.size.width/2 - 20, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
         yCoordinate.path = arrowY.cgPath
         yCoordinate.strokeColor = UIColor.black
-        yCoordinate.lineWidth = 5
+        yCoordinate.lineWidth = 2
         yCoordinate.zPosition = 5
         self.addChild(yCoordinate)
 
+        circleX = SKShapeNode(circleOfRadius: 2) // Size of Circle
+        circleX.position = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+        circleX.strokeColor = UIColor.red
+        circleX.fillColor = UIColor.red
+        circleX.glowWidth = 1.0
+        circleX.zPosition = 5
+        self.addChild(circleX)
+        
+        circleY = SKShapeNode(circleOfRadius: 2) // Size of Circle
+        circleY.position = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+        circleY.strokeColor = UIColor.red
+        circleY.fillColor = UIColor.red
+        circleY.glowWidth = 1.0
+        circleY.zPosition = 5
+        self.addChild(circleY)
     }
     
     func fillHearts(count: Int){
@@ -249,6 +264,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         //        print("go to gameoverScene")
         let gameOverScene = GameOverScene(fileNamed: "GameOverScene")
         gameOverScene?.scaleMode = .aspectFill
+        gameOverScene!.level = 2
         self.view?.presentScene(gameOverScene!)
     }
 
@@ -290,11 +306,15 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         if isPlaying == true{
             path.addLine(to: CGPoint(x: currentLocation.x + (characterNode!.position.x - previousCharacterNodeX)/3, y: currentLocation.y + (characterNode!.position.y - previousCharacterNodeY)/3))
             path.move(to: CGPoint(x: currentLocation.x + (characterNode!.position.x - previousCharacterNodeX)/3, y: currentLocation.y + (characterNode!.position.y - previousCharacterNodeY)/3))
+            
+            circleX.run(SKAction.move(to: CGPoint(x: currentLocation.x + (characterNode!.position.x - previousCharacterNodeX)/3, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), duration: 0))
+            circleY.run(SKAction.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: currentLocation.y + (characterNode!.position.y - previousCharacterNodeY)/3), duration: 0))
+            
             currentLocation = CGPoint(x:currentLocation.x + (characterNode!.position.x - previousCharacterNodeX)/3, y: currentLocation.y + (characterNode!.position.y - previousCharacterNodeY)/3)
             
             lineShape.path = path
             lineShape.strokeColor = UIColor.black
-            lineShape.lineWidth = 5
+            lineShape.lineWidth = 2
             
             previousCharacterNodeX = characterNode!.position.x
             previousCharacterNodeY = characterNode!.position.y
@@ -372,7 +392,6 @@ extension AdventureScene2{
                 speedNode!.run(repeatAction2)
             }
             if characterNode.position.x > mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) && characterNode.position.x <= mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/9 {
-                print("success")
                 var number = applicationDelegate.levelRecordDictionary["level2"] as! [Int]
                 print(number[1])
                 if self.heartsArray.count > number[0] {

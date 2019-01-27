@@ -19,7 +19,13 @@
 		8036C92B21B4F71500A7BBC0 /* meteorFallingSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8036C92421B4F71500A7BBC0 /* meteorFallingSound.wav */; };
 		8036C93221B571C800A7BBC0 /* AchievementScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8036C93121B571C800A7BBC0 /* AchievementScene.sks */; };
 		8036C93521B571FE00A7BBC0 /* AchievementScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8036C93421B571FE00A7BBC0 /* AchievementScene.swift */; };
+		804B914F21F9612600785843 /* AdventureScene5.sks in Resources */ = {isa = PBXBuildFile; fileRef = 804B914E21F9612600785843 /* AdventureScene5.sks */; };
+		804B915121F9615B00785843 /* AdventureScene5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804B915021F9615B00785843 /* AdventureScene5.swift */; };
+		804B915421F967A800785843 /* AdventureScene4.sks in Resources */ = {isa = PBXBuildFile; fileRef = 804B915321F967A800785843 /* AdventureScene4.sks */; };
+		804B915621F967C800785843 /* AdventureScene4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 804B915521F967C800785843 /* AdventureScene4.swift */; };
 		805170AC21BCAE1100E6C2D4 /* levelRecord.plist in Resources */ = {isa = PBXBuildFile; fileRef = 805170AB21BCAE1100E6C2D4 /* levelRecord.plist */; };
+		8055680C21F4DEE000FA6B71 /* AdventureScene6.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8055680B21F4DEE000FA6B71 /* AdventureScene6.sks */; };
+		8055680E21F4DEFE00FA6B71 /* AdventureScene6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8055680D21F4DEFE00FA6B71 /* AdventureScene6.swift */; };
 		8060DAB8217D35DE007D29F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8060DAB7217D35DE007D29F6 /* AppDelegate.swift */; };
 		8060DABC217D35DE007D29F6 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8060DABB217D35DE007D29F6 /* Actions.sks */; };
 		8060DAC0217D35DE007D29F6 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8060DABF217D35DE007D29F6 /* GameViewController.swift */; };
@@ -54,7 +60,13 @@
 		8036C92421B4F71500A7BBC0 /* meteorFallingSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = meteorFallingSound.wav; sourceTree = "<group>"; };
 		8036C93121B571C800A7BBC0 /* AchievementScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AchievementScene.sks; sourceTree = "<group>"; };
 		8036C93421B571FE00A7BBC0 /* AchievementScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementScene.swift; sourceTree = "<group>"; };
+		804B914E21F9612600785843 /* AdventureScene5.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AdventureScene5.sks; sourceTree = "<group>"; };
+		804B915021F9615B00785843 /* AdventureScene5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureScene5.swift; sourceTree = "<group>"; };
+		804B915321F967A800785843 /* AdventureScene4.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AdventureScene4.sks; sourceTree = "<group>"; };
+		804B915521F967C800785843 /* AdventureScene4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureScene4.swift; sourceTree = "<group>"; };
 		805170AB21BCAE1100E6C2D4 /* levelRecord.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = levelRecord.plist; sourceTree = "<group>"; };
+		8055680B21F4DEE000FA6B71 /* AdventureScene6.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = AdventureScene6.sks; sourceTree = "<group>"; };
+		8055680D21F4DEFE00FA6B71 /* AdventureScene6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureScene6.swift; sourceTree = "<group>"; };
 		8060DAB4217D35DE007D29F6 /* FunctionAdventureGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FunctionAdventureGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8060DAB7217D35DE007D29F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8060DABB217D35DE007D29F6 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -121,6 +133,33 @@
 			path = AchievementScene;
 			sourceTree = "<group>";
 		};
+		804B915221F9616100785843 /* AdventureScene5 */ = {
+			isa = PBXGroup;
+			children = (
+				804B914E21F9612600785843 /* AdventureScene5.sks */,
+				804B915021F9615B00785843 /* AdventureScene5.swift */,
+			);
+			path = AdventureScene5;
+			sourceTree = "<group>";
+		};
+		804B915721F967D400785843 /* AdventureScene4 */ = {
+			isa = PBXGroup;
+			children = (
+				804B915321F967A800785843 /* AdventureScene4.sks */,
+				804B915521F967C800785843 /* AdventureScene4.swift */,
+			);
+			path = AdventureScene4;
+			sourceTree = "<group>";
+		};
+		8055680F21F4DF0700FA6B71 /* AdventureScene6 */ = {
+			isa = PBXGroup;
+			children = (
+				8055680B21F4DEE000FA6B71 /* AdventureScene6.sks */,
+				8055680D21F4DEFE00FA6B71 /* AdventureScene6.swift */,
+			);
+			path = AdventureScene6;
+			sourceTree = "<group>";
+		};
 		8060DAAB217D35DE007D29F6 = {
 			isa = PBXGroup;
 			children = (
@@ -144,6 +183,9 @@
 				807316D62190FA3800E3E943 /* MenuScene */,
 				80DE8A3E2199CA6A00730B8F /* GameLevelScene */,
 				8036C93321B571D700A7BBC0 /* AchievementScene */,
+				8055680F21F4DF0700FA6B71 /* AdventureScene6 */,
+				804B915221F9616100785843 /* AdventureScene5 */,
+				804B915721F967D400785843 /* AdventureScene4 */,
 				80E0D9D721EA4B8800A3055B /* AdventureScene3 */,
 				80E21BCB21CD99220008BEAD /* AdventureScene2 */,
 				807316D72190FA4900E3E943 /* AdventureScene */,
@@ -288,8 +330,11 @@
 				80E21BCD21D031310008BEAD /* Assets.xcassets in Resources */,
 				8036C92921B4F71500A7BBC0 /* music.wav in Resources */,
 				8036C93221B571C800A7BBC0 /* AchievementScene.sks in Resources */,
+				804B914F21F9612600785843 /* AdventureScene5.sks in Resources */,
 				8060DAC8217D35E1007D29F6 /* LaunchScreen.storyboard in Resources */,
 				8036C92821B4F71500A7BBC0 /* levelUpSound.wav in Resources */,
+				804B915421F967A800785843 /* AdventureScene4.sks in Resources */,
+				8055680C21F4DEE000FA6B71 /* AdventureScene6.sks in Resources */,
 				8036C92621B4F71500A7BBC0 /* rewardSound.wav in Resources */,
 				80C8202B21AC3AEE00DF09D0 /* GameOverScene.sks in Resources */,
 				8036C92521B4F71500A7BBC0 /* jumpSound.wav in Resources */,
@@ -306,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8032149421A8C86600A21713 /* GameSuccessScene.swift in Sources */,
+				804B915121F9615B00785843 /* AdventureScene5.swift in Sources */,
 				80E0D9D621EA4B7F00A3055B /* AdventureScene3.swift in Sources */,
 				8077D2BF21EBAB2F00FC165B /* playerStateMachine.swift in Sources */,
 				80ED1AE4219097A4008FAE7C /* MenuScene.swift in Sources */,
@@ -313,9 +359,11 @@
 				8036C93521B571FE00A7BBC0 /* AchievementScene.swift in Sources */,
 				80E21BCA21CD991B0008BEAD /* AdventureScene2.swift in Sources */,
 				80DE8A3D2199CA6100730B8F /* GameLevelScene.swift in Sources */,
+				8055680E21F4DEFE00FA6B71 /* AdventureScene6.swift in Sources */,
 				8060DAC0217D35DE007D29F6 /* GameViewController.swift in Sources */,
 				8060DAB8217D35DE007D29F6 /* AppDelegate.swift in Sources */,
 				807316DB2190FBC100E3E943 /* AdventureScene.swift in Sources */,
+				804B915621F967C800785843 /* AdventureScene4.swift in Sources */,
 				8036C91D21B4ED7600A7BBC0 /* Sound.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

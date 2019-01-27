@@ -45,10 +45,22 @@ class GameSuccessScene: SKScene {
             self.view?.presentScene(gameLevelScene!)
         }
    
-//        if nextButton.contains(touch!.location(in: self)) {
-//            let adventureScene2 = GameLevelScene(fileNamed: "AdventureScene2")
-//            adventureScene2?.scaleMode = .aspectFill
-//            self.view?.presentScene(adventureScene2!)
-//        }
+        if nextButton.contains(touch!.location(in: self)) {
+            if level == 0 {
+                let adventureScene2 = AdventureScene2(fileNamed: "AdventureScene2")
+                adventureScene2?.scaleMode = .aspectFill
+                self.view?.presentScene(adventureScene2!)
+            }
+            if level == 2{
+                let adventureScene3 = AdventureScene3(fileNamed: "AdventureScene3")
+                adventureScene3?.scaleMode = .aspectFill
+                self.view?.presentScene(adventureScene3!)
+            }
+//            if level == 3{
+//                let adventureScene4 = AdventureScene4(fileNamed: "AdventureScene4")
+//                adventureScene4?.scaleMode = .aspectFill
+//                self.view?.presentScene(adventureScene4!)
+//            }
+        }
     }
 }
