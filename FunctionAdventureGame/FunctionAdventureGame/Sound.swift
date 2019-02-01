@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 
 enum Sound : String{
-    case hit, jump, meteorFalling, reward
+    case hit, jump, meteorFalling, reward, applaud, levelUp
     var action : SKAction{
         return SKAction.playSoundFileNamed(rawValue + "Sound.wav", waitForCompletion: false)
     }

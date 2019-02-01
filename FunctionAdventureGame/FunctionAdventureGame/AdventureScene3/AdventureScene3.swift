@@ -22,6 +22,16 @@ class AdventureScene3: SKScene, SKPhysicsContactDelegate {
     var replayButtonNode: SKNode?
     var endZoneNode: SKNode?
     var functionLabel = SKLabelNode()
+    var questionButtonNode: SKNode?
+    var tutorialNode: SKNode?
+    var tutorialTitleNode = SKLabelNode()
+    var tutorialLabelNode = SKLabelNode()
+    var funcEquationNode = SKLabelNode()
+    var resumeButtonNode: SKNode?
+    var okButtonNode: SKNode?
+    var cancelButtonNode: SKNode?
+    var alertLabelNode = SKLabelNode()
+    var alertNode = SKShapeNode()
     
     //Camera
     var cameraNode: SKCameraNode?
@@ -38,7 +48,9 @@ class AdventureScene3: SKScene, SKPhysicsContactDelegate {
     var joystickFrozen = false
     var joystickAction = false
     var joystickFree = true
+    var tutorialShow = false
     
+    var backOrReplay = "back"
     var currentNode = 1
     var knobRadius : CGFloat = 50.0
     var playerIsFacingRight = true
@@ -179,11 +191,79 @@ class AdventureScene3: SKScene, SKPhysicsContactDelegate {
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
         backButtonNode?.zPosition = 2
         pauseButtonNode = self.childNode(withName: "pauseButton")
-        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
+        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (pauseButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         pauseButtonNode?.zPosition = 2
+        
+        resumeButtonNode = self.childNode(withName: "resumeButton")
+        resumeButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (resumeButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (resumeButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
+        resumeButtonNode?.zPosition = -3
+        
         replayButtonNode = self.childNode(withName: "replayButton")
-        replayButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/12)
+        replayButtonNode?.position = CGPoint(x: self.frame.size.width/3 - (replayButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         replayButtonNode?.zPosition = 2
+        
+        questionButtonNode = self.childNode(withName: "questionButton")
+        questionButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11)
+        questionButtonNode?.zPosition = 2
+
+        tutorialNode = self.childNode(withName: "tutorialbg")
+        tutorialNode!.zPosition = -5
+        tutorialNode!.alpha = 0
+        tutorialNode!.position = CGPoint(x: 0, y: 0)
+
+        tutorialTitleNode.horizontalAlignmentMode = .center
+        tutorialTitleNode.verticalAlignmentMode = .center
+        tutorialTitleNode.position = CGPoint(x: 0, y: self.frame.size.height/8-10)
+        tutorialTitleNode.fontName = "Arial"
+        tutorialTitleNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialTitleNode.fontSize = 26
+        tutorialTitleNode.text = "How to Play!"
+        tutorialTitleNode.zPosition = -6
+        tutorialTitleNode.alpha = 0
+        cameraNode?.addChild(tutorialTitleNode)
+
+        tutorialLabelNode.horizontalAlignmentMode = .center
+        tutorialLabelNode.verticalAlignmentMode = .center
+        tutorialLabelNode.position = CGPoint(x: 0, y: -15)
+        tutorialLabelNode.fontName = "Arial"
+        tutorialLabelNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialLabelNode.fontSize = 20
+        tutorialLabelNode.text = "   Choose the moving direction and speed by clicking two buttons. Your goal is to jump across the river and reach the the other side of the mountain! Drop into water and jump too far away will lose a heart. You could try three times for this game."
+        tutorialLabelNode.numberOfLines = 5
+        tutorialLabelNode.preferredMaxLayoutWidth = self.frame.size.width/3
+        tutorialLabelNode.zPosition = -6
+        tutorialLabelNode.alpha = 0
+        cameraNode?.addChild(tutorialLabelNode)
+        
+        alertNode = SKShapeNode(rectOf: CGSize(width: self.frame.size.width/4, height: self.frame.size.height/6), cornerRadius: 20)
+        alertNode.zPosition = -6
+        alertNode.position = CGPoint(x: 0, y: self.frame.size.height/25)
+        alertNode.fillColor = UIColor(red:0.60, green:0.78, blue:0.20, alpha:1.0)
+        alertNode.alpha = 0
+        cameraNode!.addChild(alertNode)
+        
+        alertLabelNode.horizontalAlignmentMode = .center
+        alertLabelNode.verticalAlignmentMode = .center
+        alertLabelNode.position = CGPoint(x: 0, y: self.frame.size.height/15)
+        alertLabelNode.fontName = "Arial"
+        alertLabelNode.fontColor = UIColor.black
+        alertLabelNode.fontSize = 20
+        alertLabelNode.text = "Do you want to go back to levels?"
+        alertLabelNode.numberOfLines = 5
+        alertLabelNode.alpha = 0
+        alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
+        alertLabelNode.zPosition = -6
+        cameraNode!.addChild(alertLabelNode)
+        
+        okButtonNode = self.childNode(withName: "okButton")
+        okButtonNode!.position = CGPoint(x: self.frame.size.width/16, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4)
+        okButtonNode?.zPosition = -6
+        okButtonNode?.alpha = 0
+        
+        cancelButtonNode = self.childNode(withName: "cancelButton")
+        cancelButtonNode!.position = CGPoint(x: -self.frame.size.width/16, y: self.frame.size.height/25 - cancelButtonNode!.frame.size.height*3/4)
+        cancelButtonNode?.zPosition = -6
+        cancelButtonNode?.alpha = 0
         
 //        timeCounterLabel = self.childNode(withName: "timeCounter") as? SKLabelNode
         timeCounterLabel.zPosition = 2
@@ -219,6 +299,17 @@ class AdventureScene3: SKScene, SKPhysicsContactDelegate {
         functionLabel.zPosition = 6
         cameraNode!.addChild(functionLabel)
         
+        funcEquationNode.horizontalAlignmentMode = .center
+        funcEquationNode.verticalAlignmentMode = .center
+        funcEquationNode.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/6 * 2)
+        funcEquationNode.fontName = "Arial"
+        funcEquationNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        funcEquationNode.fontSize = 26
+        let stringA = String(format: "%.2f", a)
+        funcEquationNode.text = "y = \(stringA)^x"
+        funcEquationNode.zPosition = 6
+        cameraNode!.addChild(funcEquationNode)
+        
         
         //draw border
         shape.path = UIBezierPath(rect: CGRect(x: -self.frame.size.width/6, y: -self.frame.size.height/6, width: self.frame.size.width/3, height: self.frame.size.height/3)).cgPath
@@ -233,7 +324,7 @@ class AdventureScene3: SKScene, SKPhysicsContactDelegate {
         
         //Y axis
         let arrowY = UIBezierPath()
-        arrowY.addArrow3(start: CGPoint(x: (self.frame.size.width/3 - 80)/9*4 + self.frame.size.width/6 + 50, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), end: CGPoint(x: (self.frame.size.width/3 - 80)/9*4 + self.frame.size.width/6 + 50, y: -self.frame.size.height/6 + self.frame.size.height/30 - 20), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
+        arrowY.addArrow3(start: CGPoint(x: (self.frame.size.width/3 - 80)/9*4 + self.frame.size.width/6 + 50, y: 20 + self.frame.size.height/30 - self.frame.size.height/2), end: CGPoint(x: (self.frame.size.width/3 - 80)/9*4 + self.frame.size.width/6 + 50, y: -self.frame.size.height/6 + self.frame.size.height/30 - 40), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
         yCoordinate.path = arrowY.cgPath
         yCoordinate.strokeColor = UIColor.black
         yCoordinate.lineWidth = 2
@@ -317,29 +408,152 @@ extension AdventureScene3{
             let location = touch.location(in: self)
             if !(joystick?.contains(location))! {
 //                playerStateMachine.enter(JumpingState.self)
-                let textures = SKTexture(imageNamed: "jump")
-                let action = {SKAction.animate(with: [textures], timePerFrame: 0.1)}()
-                playerNode!.run(action)
-                playerNode!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 85))
+                if pause == false {
+                    let textures = SKTexture(imageNamed: "jump")
+                    let action = {SKAction.animate(with: [textures], timePerFrame: 0.1)}()
+                    playerNode!.run(action)
+                    playerNode!.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                    playerNode!.physicsBody?.angularVelocity = 0
+                    playerNode!.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 120))
+                }
             }
         }
         let touch = touches.first
         if let location = touch?.location(in: self){
             let nodesArray = self.nodes(at: location)
+            
+            if nodesArray.first?.name == "okButton"{
+                if backOrReplay == "back"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertNode.alpha = 0
+                    alertLabelNode.zPosition = -6
+                    alertLabelNode.alpha = 0
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    okButtonNode!.alpha = 0
+                    cancelButtonNode!.alpha = 0
+                    let gameLevelScene = GameLevelScene(fileNamed: "GameLevelScene")
+                    gameLevelScene?.scaleMode = .aspectFill
+                    self.view?.presentScene(gameLevelScene!)
+                }
+                if backOrReplay == "replay"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertNode.alpha = 0
+                    alertLabelNode.zPosition = -6
+                    alertLabelNode.alpha = 0
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    okButtonNode!.alpha = 0
+                    cancelButtonNode!.alpha = 0
+                    let adventureScene3 = AdventureScene3(fileNamed: "AdventureScene3")
+                    adventureScene3?.scaleMode = .aspectFill
+                    self.view?.presentScene(adventureScene3!)
+                }
+            }
+            
+            if nodesArray.first?.name == "cancelButton"{
+                pause = false
+                alertNode.zPosition = -5
+                alertNode.alpha = 0
+                alertLabelNode.zPosition = -6
+                alertLabelNode.alpha = 0
+                okButtonNode!.zPosition = -6
+                cancelButtonNode!.zPosition = -6
+                okButtonNode!.alpha = 0
+                cancelButtonNode!.alpha = 0
+            }
         
             if nodesArray.first?.name == "backButton"{
-                pause = true
-                showAlertBack(withTitle: "Go Back", message: "Do you want to go back to Game Level Scene")
+                if pause == false {
+                    pause = true
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    backOrReplay = "back"
+                    alertNode.zPosition = 5
+                    alertNode.alpha = 1
+                    alertLabelNode.text = "Do you want to go back to levels?"
+                    alertLabelNode.zPosition = 6
+                    alertLabelNode.alpha = 1
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                    okButtonNode!.alpha = 1
+                    cancelButtonNode!.alpha = 1
+                }
             }
             if nodesArray.first?.name == "pauseButton"{
+                if pause == false{
+                    pause = true
+                    pauseButtonNode?.zPosition = -2
+                    pauseButtonNode!.alpha = 0
+                    resumeButtonNode?.zPosition = 2
+                    resumeButtonNode!.alpha = 0
+                    resumeButtonNode?.run(SKAction.repeatForever(.sequence([
+                        .fadeAlpha(to: 0.2, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        .fadeAlpha(to: 1.0, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        ])))
+                }
+            }
+            if nodesArray.first?.name == "resumeButton"{
                 //pause all variables about time.
-                pause = true
-                //                ]timer.invalidate()
-                showAlertResume(withTitle: "Resume", message: "Do you want to resume now?")
+                if pause == true{
+                    pause = false
+                    //                    timer.invalidate()
+                    //                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
+                    pauseButtonNode?.zPosition = 2
+                    resumeButtonNode?.zPosition = -2
+                    resumeButtonNode?.removeAllActions()
+                    pauseButtonNode!.alpha = 1
+                    resumeButtonNode!.alpha = 0
+                }
             }
             if nodesArray.first?.name == "replayButton"{
-                pause = true
-                showAlertReplay(withTitle: "Replay", message: "Do you want to replay now?")
+                if pause == false {
+                    pause = true
+                    backOrReplay = "replay"
+                    
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    alertNode.zPosition = 5
+                    alertNode.alpha = 1
+                    alertLabelNode.text = "Do you want to replay this game?"
+                    alertLabelNode.zPosition = 6
+                    alertLabelNode.alpha = 1
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                    okButtonNode!.alpha = 1
+                    cancelButtonNode!.alpha = 1
+                }
+            }
+            if nodesArray.first?.name == "questionButton"{
+
+                if tutorialShow == false {
+                    //show tutorial
+                    if pause == true {return}
+                    pause = true
+                    tutorialShow = true
+                    tutorialNode?.zPosition = 5
+                    tutorialTitleNode.zPosition = 6
+                    tutorialLabelNode.zPosition = 6
+                    tutorialNode?.alpha = 1
+                    tutorialTitleNode.alpha = 1
+                    tutorialLabelNode.alpha = 1
+
+                }
+                else{
+                    if tutorialShow == true {
+                        tutorialShow = false
+                        pause = false
+                        //hiden tutorial
+                        tutorialNode?.zPosition = -5
+                        tutorialTitleNode.zPosition = -6
+                        tutorialLabelNode.zPosition = -6
+                        tutorialNode?.alpha = 0
+                        tutorialTitleNode.alpha = 0
+                        tutorialLabelNode.alpha = 0
+                    }
+                }
             }
         }
     }
@@ -387,8 +601,6 @@ extension AdventureScene3{
         let deltaTime = currentTime - previousTimeInterval
         previousTimeInterval = currentTime
         
-//        rewardIsNotTouched = true
-        
         //camera
         cameraNode!.position.x = playerNode!.position.x - (120 + self.frame.size.width/18 - self.frame.size.width/2)
         cameraNode!.position.y = playerNode!.position.y - (150 + self.frame.size.height/6 - self.frame.size.height/2 + playerNode!.frame.size.height/2)
@@ -396,10 +608,22 @@ extension AdventureScene3{
         joystick?.position.x = cameraNode!.position.x + (self.frame.size.width/10 - self.frame.size.width/2)
         backButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/25 - self.frame.size.width/2
         backButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25
-        pauseButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/2 - self.frame.size.width/25
-        pauseButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/25
-        replayButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/2 - self.frame.size.width/25
-        replayButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/12
+    
+        pauseButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/2 - self.frame.size.width/30 - (pauseButtonNode?.frame.size.width)!/2
+        pauseButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/30
+        resumeButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/2 - self.frame.size.width/30 - (resumeButtonNode?.frame.size.width)!/2
+        resumeButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (resumeButtonNode?.frame.size.height)!/2 - self.frame.size.width/30
+        replayButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/3 - (replayButtonNode?.frame.size.width)!/2
+        replayButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/30
+        questionButtonNode?.position.x = cameraNode!.position.x + self.frame.size.width/25 - self.frame.size.width/2
+        questionButtonNode?.position.y = cameraNode!.position.y + self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11
+        tutorialNode!.position.x = cameraNode!.position.x
+        tutorialNode!.position.y = cameraNode!.position.y
+        okButtonNode!.position.x = cameraNode!.position.x + self.frame.size.width/16
+        okButtonNode!.position.y = cameraNode!.position.y + self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4
+        cancelButtonNode!.position.x = cameraNode!.position.x - self.frame.size.width/16
+        cancelButtonNode!.position.y  = cameraNode!.position.y + self.frame.size.height/25 - cancelButtonNode!.frame.size.height*3/4
+        
         for index in 0 ..< heartsArray.count{
             heartsArray[index].position.x = cameraNode!.position.x +  self.frame.size.width/8 - self.frame.size.width/2 + CGFloat(index) * heartsArray[0].size.width
             heartsArray[index].position.y = cameraNode!.position.y + self.frame.size.height/2 - heartsArray[0].frame.size.height/2 - self.frame.size.width/20
@@ -439,18 +663,6 @@ extension AdventureScene3{
             }
             playerNode?.run(faceAction)
         }
-        //background parallax
-//        let parallax1 = SKAction.moveTo(x: (player!.position.x)/(-10), duration: 0.0)
-//        mountains1?.run(parallax1)
-//        mountains3?.run(parallax1)
-//        let parallax2 = SKAction.moveTo(x: (player!.position.x)/(-20), duration: 0.0)
-//        mountains2?.run(parallax2)
-//        mountains4?.run(parallax2)
-//        let parallax3 = SKAction.moveTo(x: (player!.position.x)/(-40), duration: 0.0)
-//        mountains5?.run(parallax3)
-//        let parallax4 = SKAction.moveTo(x: cameraNode!.position.x, duration: 0.0)
-//        moon?.run(parallax4)
-//        stars?.run(parallax4)
     }
 }
 
@@ -505,6 +717,12 @@ extension AdventureScene3{
                         if i <= number{
                             (cameraNode?.childNode(withName: "circle\(i)") as! SKShapeNode).strokeColor = UIColor.red
                             (cameraNode?.childNode(withName: "circle\(i)") as! SKShapeNode).fillColor = UIColor.red
+                            (cameraNode?.childNode(withName: "circle\(i)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 3))
                         }
                         else{
                             (cameraNode?.childNode(withName: "circle\(i)") as! SKShapeNode).strokeColor = UIColor.black
@@ -636,11 +854,12 @@ extension AdventureScene3{
     }
     
     func showAlertBack(withTitle title: String, message: String) {
-        
+        print("show back alert")
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
+        print("here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             self.pause = false
+            print("cancel button")
         }
         alertController.addAction(cancelAction)
         

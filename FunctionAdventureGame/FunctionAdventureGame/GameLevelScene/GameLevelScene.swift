@@ -18,6 +18,9 @@ class GameLevelScene: SKScene {
     var levelNode5: SKNode?
     var levelNode6: SKNode?
     var backButtonNode: SKNode?
+    var okButtonNode: SKNode?
+    var alertLabelNode = SKLabelNode()
+    var alertNode = SKShapeNode()
     
     var level2lock = true
     var level3lock = true
@@ -31,6 +34,28 @@ class GameLevelScene: SKScene {
     override func didMove(to view: SKView) {
         gameLevelbgNode = self.childNode(withName: "gameLevelbg")
         gameLevelbgNode?.zPosition = -1
+        print("view load")
+        alertNode = SKShapeNode(rectOf: CGSize(width: self.frame.size.width/4, height: self.frame.size.height/6), cornerRadius: 20)
+        alertNode.zPosition = -5
+        alertNode.position = CGPoint(x: 0, y: self.frame.size.height/25)
+        alertNode.fillColor = UIColor(red:0.67, green:0.44, blue:0.17, alpha:1.0)
+        self.addChild(alertNode)
+        
+        alertLabelNode.horizontalAlignmentMode = .center
+        alertLabelNode.verticalAlignmentMode = .center
+        alertLabelNode.position = CGPoint(x: 0, y: self.frame.size.height/15)
+        alertLabelNode.fontName = "Arial"
+        alertLabelNode.fontColor = UIColor.black
+        alertLabelNode.fontSize = 20
+        alertLabelNode.text = "Do you want to go back to levels?"
+        alertLabelNode.numberOfLines = 5
+        alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
+        alertLabelNode.zPosition = -6
+        self.addChild(alertLabelNode)
+        
+        okButtonNode = self.childNode(withName: "okButton")
+        okButtonNode!.position = CGPoint(x: 0, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*7/8)
+        okButtonNode?.zPosition = -6
         
         levelNode1 = self.childNode(withName: "level1")
         levelNode1?.position = CGPoint(x: self.frame.size.width/2 - 90, y: -(35+45))
@@ -38,16 +63,17 @@ class GameLevelScene: SKScene {
             let starNode = SKSpriteNode(imageNamed: "starEmpty")
             starNode.setScale(0.09)
             starNode.position = CGPoint(x: self.frame.size.width/2 - 90 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -(35+47))
-            starNode.zPosition = 5
+            starNode.zPosition = 3
             self.addChild(starNode)
         }
         var number1 = applicationDelegate.levelRecordDictionary["level1"] as! [Int]
+        print("level1: \(number1[0])")
         if number1[0] != 0 {
             for star in 1 ... number1[0] {
                 let starNode = SKSpriteNode(imageNamed: "starFull")
                 starNode.setScale(0.09)
                 starNode.position = CGPoint(x: self.frame.size.width/2 - 90 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -(35+47))
-                starNode.zPosition = 6
+                starNode.zPosition = 4
                 self.addChild(starNode)
             }
         }
@@ -65,16 +91,17 @@ class GameLevelScene: SKScene {
             let starNode = SKSpriteNode(imageNamed: "starEmpty")
             starNode.setScale(0.09)
             starNode.position = CGPoint(x: self.frame.size.width/6 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -self.frame.size.height/3 - 2)
-            starNode.zPosition = 5
+            starNode.zPosition = 3
             self.addChild(starNode)
         }
         var number2 = applicationDelegate.levelRecordDictionary["level2"] as! [Int]
+        print("level2: \(number2[0])")
         if number2[0] != 0 {
             for star in 1 ... number2[0] {
                 let starNode = SKSpriteNode(imageNamed: "starFull")
                 starNode.setScale(0.09)
                 starNode.position = CGPoint(x: self.frame.size.width/6 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -self.frame.size.height/3 - 2)
-                starNode.zPosition = 6
+                starNode.zPosition = 4
                 self.addChild(starNode)
             }
         }
@@ -83,7 +110,7 @@ class GameLevelScene: SKScene {
             let lockNode = SKSpriteNode(imageNamed: "lock")
             lockNode.setScale(0.04)
             lockNode.position = CGPoint(x: self.frame.size.width/6 - 25 + 70, y: -self.frame.size.height/3 + 10)
-            lockNode.zPosition = 5
+            lockNode.zPosition = 4
             self.addChild(lockNode)
         }
         else{
@@ -96,7 +123,7 @@ class GameLevelScene: SKScene {
             let starNode = SKSpriteNode(imageNamed: "starEmpty")
             starNode.setScale(0.09)
             starNode.position = CGPoint(x: -self.frame.size.width/6 - 50 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -self.frame.size.height/3 - 2)
-            starNode.zPosition = 5
+            starNode.zPosition = 3
             self.addChild(starNode)
         }
         var number3 = applicationDelegate.levelRecordDictionary["level3"] as! [Int]
@@ -105,7 +132,7 @@ class GameLevelScene: SKScene {
                 let starNode = SKSpriteNode(imageNamed: "starFull")
                 starNode.setScale(0.09)
                 starNode.position = CGPoint(x: -self.frame.size.width/6 - 50 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -self.frame.size.height/3 - 2)
-                starNode.zPosition = 6
+                starNode.zPosition = 4
                 self.addChild(starNode)
             }
         }
@@ -114,7 +141,7 @@ class GameLevelScene: SKScene {
             let lockNode = SKSpriteNode(imageNamed: "lock")
             lockNode.setScale(0.04)
             lockNode.position = CGPoint(x: -self.frame.size.width/6 - 50 + 70, y: -self.frame.size.height/3 + 10)
-            lockNode.zPosition = 5
+            lockNode.zPosition = 4
             self.addChild(lockNode)
         }
         else{
@@ -127,7 +154,7 @@ class GameLevelScene: SKScene {
             let starNode = SKSpriteNode(imageNamed: "starEmpty")
             starNode.setScale(0.09)
             starNode.position = CGPoint(x: -self.frame.size.width/3 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -2)
-            starNode.zPosition = 5
+            starNode.zPosition = 3
             self.addChild(starNode)
         }
         var number4 = applicationDelegate.levelRecordDictionary["level4"] as! [Int]
@@ -136,7 +163,7 @@ class GameLevelScene: SKScene {
                 let starNode = SKSpriteNode(imageNamed: "starFull")
                 starNode.setScale(0.09)
                 starNode.position = CGPoint(x: -self.frame.size.width/3 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -2)
-                starNode.zPosition = 6
+                starNode.zPosition = 4
                 self.addChild(starNode)
             }
         }
@@ -145,7 +172,7 @@ class GameLevelScene: SKScene {
             let lockNode = SKSpriteNode(imageNamed: "lock")
             lockNode.setScale(0.04)
             lockNode.position = CGPoint(x: -self.frame.size.width/3 - 25 + 70, y: 10)
-            lockNode.zPosition = 5
+            lockNode.zPosition = 4
             self.addChild(lockNode)
         }
         else{
@@ -158,7 +185,7 @@ class GameLevelScene: SKScene {
             let starNode = SKSpriteNode(imageNamed: "starEmpty")
             starNode.setScale(0.09)
             starNode.position = CGPoint(x: -25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -levelNode5!.frame.size.height/2 - 2)
-            starNode.zPosition = 5
+            starNode.zPosition = 3
             self.addChild(starNode)
         }
         var number5 = applicationDelegate.levelRecordDictionary["level5"] as! [Int]
@@ -167,7 +194,7 @@ class GameLevelScene: SKScene {
                 let starNode = SKSpriteNode(imageNamed: "starFull")
                 starNode.setScale(0.09)
                 starNode.position = CGPoint(x: -25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: -levelNode5!.frame.size.height/2 - 2)
-                starNode.zPosition = 6
+                starNode.zPosition = 4
                 self.addChild(starNode)
             }
         }
@@ -176,7 +203,7 @@ class GameLevelScene: SKScene {
             let lockNode = SKSpriteNode(imageNamed: "lock")
             lockNode.setScale(0.04)
             lockNode.position = CGPoint(x: -25 + 70, y: -levelNode5!.frame.size.height/2 + 10)
-            lockNode.zPosition = 5
+            lockNode.zPosition = 4
             self.addChild(lockNode)
         }
         else{
@@ -189,7 +216,7 @@ class GameLevelScene: SKScene {
             let starNode = SKSpriteNode(imageNamed: "starEmpty")
             starNode.setScale(0.09)
             starNode.position = CGPoint(x: self.frame.size.width/4 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: levelNode5!.frame.size.height*3/2 - 2)
-            starNode.zPosition = 5
+            starNode.zPosition = 3
             self.addChild(starNode)
         }
         var number6 = applicationDelegate.levelRecordDictionary["level6"] as! [Int]
@@ -198,7 +225,7 @@ class GameLevelScene: SKScene {
                 let starNode = SKSpriteNode(imageNamed: "starFull")
                 starNode.setScale(0.09)
                 starNode.position = CGPoint(x: self.frame.size.width/4 - 25 + CGFloat(star - 1) * (starNode.frame.size.width + 2), y: levelNode6!.frame.size.height*3/2 - 2)
-                starNode.zPosition = 6
+                starNode.zPosition = 4
                 self.addChild(starNode)
             }
         }
@@ -207,7 +234,7 @@ class GameLevelScene: SKScene {
             let lockNode = SKSpriteNode(imageNamed: "lock")
             lockNode.setScale(0.04)
             lockNode.position = CGPoint(x: self.frame.size.width/4 - 25 + 70, y: levelNode6!.frame.size.height*3/2 + 10)
-            lockNode.zPosition = 5
+            lockNode.zPosition = 4
             self.addChild(lockNode)
         }
         else{
@@ -224,6 +251,12 @@ class GameLevelScene: SKScene {
         if let location = touch?.location(in: self){
             let nodesArray = self.nodes(at: location)
             
+            if nodesArray.first?.name == "okButton"{
+                alertNode.zPosition = -5
+                alertLabelNode.zPosition = -6
+                okButtonNode?.zPosition = -6
+            }
+            
             if nodesArray.first?.name == "level1"{
                 let adventureScene = AdventureScene(fileNamed: "AdventureScene")
                 adventureScene?.scaleMode = .aspectFill
@@ -231,7 +264,11 @@ class GameLevelScene: SKScene {
             }
             else if nodesArray.first?.name == "level2"{
                 if level2lock == true{
-                    showAlertLock(withTitle: "Locked", message: "You can't play this level!")
+//                    showAlertLock(withTitle: "Locked", message: "You can't play this level!")
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "You can not play this level! Get 3 stars at previous level first!"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode?.zPosition = 6
                 }
                 else {
                     let adventureScene2 = AdventureScene2(fileNamed: "AdventureScene2")
@@ -241,7 +278,11 @@ class GameLevelScene: SKScene {
             }
             else if nodesArray.first?.name == "level3"{
                 if level3lock == true{
-                    showAlertLock(withTitle: "Locked", message: "You can't play this level!")
+//                    showAlertLock(withTitle: "Locked", message: "You can't play this level!")
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "You can not play this level! Get 3 stars at previous level first!"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode?.zPosition = 6
                 }
                 else {
                     let adventureScene3 = AdventureScene3(fileNamed: "AdventureScene3")
@@ -251,7 +292,11 @@ class GameLevelScene: SKScene {
             }
             else if nodesArray.first?.name == "level4"{
                 if level4lock == true{
-                    showAlertLock(withTitle: "Locked", message: "You can't play this level!")
+//                    showAlertLock(withTitle: "Locked", message: "You can't play this level!")
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "You can not play this level! Get 3 stars at previous level first!"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode?.zPosition = 6
                 }
                 else {
                     let adventureScene4 = AdventureScene4(fileNamed: "AdventureScene4")

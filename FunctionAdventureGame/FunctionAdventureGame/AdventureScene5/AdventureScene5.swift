@@ -13,12 +13,24 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     var backButtonNode: SKNode?
     var pauseButtonNode: SKNode?
     var replayButtonNode: SKNode?
+    var waterbg5Node: SKNode?
     var ferrisWheelNode: SKNode?
     var playerNodeAd6: SKNode?
     var slideButtonNode: SKNode?
     var slideBarNode: SKNode?
     var speedSlideButtonNode: SKNode?
     var speedSlideBarNode: SKNode?
+    var arrowDirectionNode: SKNode?
+    var goButtonNode: SKNode?
+    var questionButtonNode: SKNode?
+    var tutorialNode: SKNode?
+    var tutorialTitleNode = SKLabelNode()
+    var tutorialLabelNode = SKLabelNode()
+    var resumeButtonNode: SKNode?
+    var okButtonNode: SKNode?
+    var cancelButtonNode: SKNode?
+    var alertLabelNode = SKLabelNode()
+    var alertNode = SKShapeNode()
     
     var pause = false
     var sizeChosen = false
@@ -27,7 +39,11 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     var sizeSlideAction = false
     var speedSlideAction = false
     var moveAction = false
+    var directionAction = false
     var gameSuccess = true
+    var goPressed = false
+    var tutorialShow = false
+    var backOrReplay = "back"
     var rotationSpeed: Double = Double(Double.pi/2)
     var moveSpeed = CGFloat(20)
     var radius: Double = 0
@@ -35,16 +51,26 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     var previousTimeInterval: TimeInterval = 0
     var tickCount = 0
     var nodeNumber = 0
+    var initialAngle = Double.pi
+    var tempAngle = Double(0)
+    var timeToRemain = 0
     
-    
+    // lineshape for player draw
     var path = CGMutablePath()
     var lineshape = SKShapeNode()
+    // lineshape for connection between wheel and trigonometric graph
     var path1 = CGMutablePath()
     var lineshape1 = SKShapeNode()
+    // lineshape for original graph
     var path2 = CGMutablePath()
     var lineshape2 = SKShapeNode()
     var currentLocation = CGPoint(x:0,y:0)
     var currentLocation1 = CGPoint(x:0,y:0)
+    let xCoordinate = SKShapeNode()
+    let yCoordinate = SKShapeNode()
+    // lineshape for scale
+    var path3 = CGMutablePath()
+    var lineshape3 = SKShapeNode()
     
     //Hearts
     var heartsArray: [SKSpriteNode]!
@@ -58,17 +84,18 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     let titleLabel = SKLabelNode()
     let sizeLabel = SKLabelNode()
     let speedLabel = SKLabelNode()
-    
+    let directionLabel = SKLabelNode()
+    let formulaLabel = SKLabelNode()
     
     // Obtain the object reference of the App Delegate object
     let applicationDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func didMove(to view: SKView) {
-        ferrisWheelNode = self.childNode(withName: "ferrisWheel")
+        waterbg5Node = self.childNode(withName: "waterbg5")
+        waterbg5Node?.zPosition = -1
+        ferrisWheelNode = self.childNode(withName: "waterWheel")
         ferrisWheelNode!.position = CGPoint(x: -self.frame.size.width/4, y: 0)
         ferrisWheelNode?.zPosition = 1
-        ferrisWheelNode?.setScale(0.4)
-        
         radius = Double(ferrisWheelNode!.frame.size.width*10/24)
         
         playerNodeAd6 = self.childNode(withName: "playerNode")
@@ -84,26 +111,40 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         slideBarNode?.zPosition = 1
         
         speedSlideButtonNode = self.childNode(withName: "speedSliderButton")
-        speedSlideButtonNode!.position = CGPoint(x: self.frame.size.width/3, y: -self.frame.size.height * 3 / 8)
+        speedSlideButtonNode!.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height * 3 / 8)
         speedSlideButtonNode?.zPosition = 2
         speedSlideBarNode = self.childNode(withName: "speedSlideBar")
-        speedSlideBarNode!.position = CGPoint(x: self.frame.size.width/3, y: -self.frame.size.height * 3 / 8)
+        speedSlideBarNode!.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height * 3 / 8)
         speedSlideBarNode?.zPosition = 1
+        
+        arrowDirectionNode = self.childNode(withName: "arrowDirection")
+        arrowDirectionNode!.position = CGPoint(x: -self.frame.size.width/11, y: -self.frame.size.height * 3 / 8)
+        arrowDirectionNode?.zPosition = 2
+        
+        goButtonNode = self.childNode(withName: "goButton")
+        goButtonNode?.setScale(0.8)
+        goButtonNode!.position = CGPoint(x: self.frame.size.width/2.7, y: -self.frame.size.height * 3 / 8)
+        goButtonNode!.zPosition = 2
         
         backButtonNode = self.childNode(withName: "backButton")
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
         backButtonNode?.zPosition = 2
         pauseButtonNode = self.childNode(withName: "pauseButton")
-        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
+        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (pauseButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         pauseButtonNode?.zPosition = 2
+        
+        resumeButtonNode = self.childNode(withName: "resumeButton")
+        resumeButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (resumeButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (resumeButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
+        resumeButtonNode?.zPosition = -3
+        
         replayButtonNode = self.childNode(withName: "replayButton")
-        replayButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/12)
+        replayButtonNode?.position = CGPoint(x: self.frame.size.width/3 - (replayButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         replayButtonNode?.zPosition = 2
         
         currentLocation = CGPoint(x: -self.frame.size.width/4 + CGFloat(radius),y:0)
         path.move(to: CGPoint(x: currentLocation.x, y: currentLocation.y))
 //        print(currentLocation.x)
-        lineshape.zPosition = 3
+        lineshape.zPosition = 4
         lineshape.strokeColor = UIColor.black
         self.addChild(lineshape)
         
@@ -118,14 +159,20 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         lineshape2.strokeColor = UIColor.white
         self.addChild(lineshape2)
         
-        currentLocation1 = CGPoint(x:0,y:0)
+        
         let radiusR = Double.random(in: radius * 0.4 ... radius * 1.2)
         let tempX = Int.random(in: 10 ... 20)
-//        print(tempX)
-//        print(self.frame.size.width)
+        let sinFunction = Int.random(in: 1 ... 4)
+        initialAngle = Double(sinFunction) * Double.pi/2
+        let A = String(format: "%.2f", radiusR/Double(self.frame.size.width) * 5 * Double.pi)
+        let w = Double(tempX)/10
+        let fi = initialAngle/Double.pi
+        
+        currentLocation1 = CGPoint(x:0,y: radiusR * sin(initialAngle))
+        path2.move(to: CGPoint(x: 0, y: radiusR * sin(initialAngle)))
         for i in 1 ... 5{
             let circle = SKShapeNode(circleOfRadius: 3) // Size of Circle
-            circle.position = CGPoint(x: 0 + CGFloat(i-1) * self.frame.size.width/CGFloat(tempX), y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2))) //Middle of Screen
+            circle.position = CGPoint(x: 0 + CGFloat(i-1) * self.frame.size.width/CGFloat(tempX), y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + initialAngle))) //Middle of Screen
             circle.strokeColor = UIColor.black
             circle.fillColor = UIColor.black
             circle.glowWidth = 1.0
@@ -134,14 +181,16 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
             currentLocation1 = CGPoint(x:0 + CGFloat(i-1) * self.frame.size.width/CGFloat(tempX),y: 0)
             if i != 5 {
                 for j in 1 ... 20{
-                    path2.addLine(to: CGPoint(x: currentLocation1.x + CGFloat(j-1) * self.frame.size.width/CGFloat(tempX)/20, y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + (Double)(j-1) * Double.pi/2/20))))
-                    path2.move(to: CGPoint(x: currentLocation1.x + CGFloat(j-1) * self.frame.size.width/CGFloat(tempX)/20, y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + (Double)(j-1) * Double.pi/2/20))))
+                    path2.addLine(to: CGPoint(x: currentLocation1.x + CGFloat(j-1) * self.frame.size.width/CGFloat(tempX)/20, y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + initialAngle + (Double)(j-1) * Double.pi/2/20))))
+                    path2.move(to: CGPoint(x: currentLocation1.x + CGFloat(j-1) * self.frame.size.width/CGFloat(tempX)/20, y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + initialAngle + (Double)(j-1) * Double.pi/2/20))))
                     lineshape2.path = path2
                     lineshape2.zPosition = 3
                     lineshape2.strokeColor = UIColor.white
+                    lineshape2.lineWidth = 3
                 }
             }
         }
+        
 
         fillHearts(count: 3)
         
@@ -169,21 +218,146 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         sizeLabel.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         sizeLabel.fontSize = 20
         sizeLabel.numberOfLines = 3
-        sizeLabel.preferredMaxLayoutWidth = self.frame.size.width/4
+        sizeLabel.preferredMaxLayoutWidth = self.frame.size.width/5
         sizeLabel.fontName = "Arial"
         sizeLabel.position = CGPoint(x: -self.frame.size.width/3, y: -self.frame.size.height/3)
-        sizeLabel.text = "Drag and move the slide button to change the size of the ferris wheel"
+        sizeLabel.text = "Change the size of the water wheel"
         self.addChild(sizeLabel)
         
         speedLabel.zPosition = 2
         speedLabel.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         speedLabel.fontSize = 20
         speedLabel.numberOfLines = 3
-        speedLabel.preferredMaxLayoutWidth = self.frame.size.width/4
+        speedLabel.preferredMaxLayoutWidth = self.frame.size.width/5
         speedLabel.fontName = "Arial"
-        speedLabel.position = CGPoint(x: self.frame.size.width/3, y: -self.frame.size.height/3)
-        speedLabel.text = "Drag and move the slide button to change the moving speed of the ferris wheel "
+        speedLabel.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height/3)
+        speedLabel.text = "change the width of the graph (𝑤 in trigonometric formula)"
         self.addChild(speedLabel)
+        
+        moveSpeed = 1/1200 * self.frame.size.width + 0.5 * 1/1200 * self.frame.size.width
+        
+        directionLabel.zPosition = 2
+        directionLabel.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+        directionLabel.fontSize = 20
+        directionLabel.numberOfLines = 3
+        directionLabel.preferredMaxLayoutWidth = self.frame.size.width/5
+        directionLabel.fontName = "Arial"
+        directionLabel.position = CGPoint(x: -self.frame.size.width/11, y: -self.frame.size.height/3)
+        directionLabel.text = "Click to change start angle"
+        self.addChild(directionLabel)
+        
+        formulaLabel.zPosition = 2
+        formulaLabel.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+        formulaLabel.fontSize = 30
+        formulaLabel.fontName = "Arial"
+        formulaLabel.position = CGPoint(x: self.frame.size.width/5, y: self.frame.size.height/2 - self.frame.size.width/6)
+        formulaLabel.text = "y = A sin(𝑤x + 𝝋) = \(A) sin(\(w)x + \(fi)π)"
+        self.addChild(formulaLabel)
+        
+        questionButtonNode = self.childNode(withName: "questionButton")
+        questionButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11)
+        questionButtonNode?.zPosition = 2
+        
+        tutorialNode = self.childNode(withName: "tutorialbg")
+        tutorialNode!.zPosition = -5
+        tutorialNode!.alpha = 0
+        tutorialNode!.position = CGPoint(x: 0, y: 0)
+        
+        tutorialTitleNode.horizontalAlignmentMode = .center
+        tutorialTitleNode.verticalAlignmentMode = .center
+        tutorialTitleNode.position = CGPoint(x: 0, y: self.frame.size.height/8-10)
+        tutorialTitleNode.fontName = "Arial"
+        tutorialTitleNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialTitleNode.fontSize = 26
+        tutorialTitleNode.text = "How to Play!"
+        tutorialTitleNode.zPosition = -6
+        tutorialTitleNode.alpha = 0
+        self.addChild(tutorialTitleNode)
+        
+        tutorialLabelNode.horizontalAlignmentMode = .center
+        tutorialLabelNode.verticalAlignmentMode = .center
+        tutorialLabelNode.position = CGPoint(x: 0, y: -15)
+        tutorialLabelNode.fontName = "Arial"
+        tutorialLabelNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialLabelNode.fontSize = 20
+        tutorialLabelNode.text = "   Choose the moving direction and speed by clicking two buttons. Your goal is to jump across the river and reach the the other side of the mountain! Drop into water and jump too far away will lose a heart. You could try three times for this game."
+        tutorialLabelNode.numberOfLines = 5
+        tutorialLabelNode.preferredMaxLayoutWidth = self.frame.size.width/3
+        tutorialLabelNode.zPosition = -6
+        tutorialLabelNode.alpha = 0
+        self.addChild(tutorialLabelNode)
+        
+        alertNode = SKShapeNode(rectOf: CGSize(width: self.frame.size.width/4, height: self.frame.size.height/6), cornerRadius: 20)
+        alertNode.zPosition = -6
+        alertNode.position = CGPoint(x: 0, y: self.frame.size.height/25)
+        alertNode.fillColor = UIColor(red:0.60, green:0.78, blue:0.20, alpha:1.0)
+        alertNode.alpha = 0
+        self.addChild(alertNode)
+        
+        alertLabelNode.horizontalAlignmentMode = .center
+        alertLabelNode.verticalAlignmentMode = .center
+        alertLabelNode.position = CGPoint(x: 0, y: self.frame.size.height/15)
+        alertLabelNode.fontName = "Arial"
+        alertLabelNode.fontColor = UIColor.black
+        alertLabelNode.fontSize = 20
+        alertLabelNode.text = "Do you want to go back to levels?"
+        alertLabelNode.numberOfLines = 5
+        alertLabelNode.alpha = 0
+        alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
+        alertLabelNode.zPosition = -6
+        self.addChild(alertLabelNode)
+        
+        okButtonNode = self.childNode(withName: "okButton")
+        okButtonNode!.position = CGPoint(x: self.frame.size.width/16, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4)
+        okButtonNode?.zPosition = -6
+        okButtonNode?.alpha = 0
+        
+        cancelButtonNode = self.childNode(withName: "cancelButton")
+        cancelButtonNode!.position = CGPoint(x: -self.frame.size.width/16, y: self.frame.size.height/25 - cancelButtonNode!.frame.size.height*3/4)
+        cancelButtonNode?.zPosition = -6
+        cancelButtonNode?.alpha = 0
+        
+        
+        //Y axis
+        let arrowY = UIBezierPath()
+        arrowY.addArrow5(start: CGPoint(x: 0, y: -self.frame.size.height/4), end: CGPoint(x: 0, y: self.frame.size.height/4), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
+        yCoordinate.path = arrowY.cgPath
+        yCoordinate.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
+        yCoordinate.lineWidth = 3
+        yCoordinate.zPosition = 4
+        self.addChild(yCoordinate)
+        //X axis
+        let arrowX = UIBezierPath()
+        arrowX.addArrow5(start: CGPoint(x: 0, y: 0), end: CGPoint(x: self.frame.size.width*7/16, y: 0), pointerLineLength: 20, arrowAngle: CGFloat(Double.pi / 4))
+        xCoordinate.path = arrowX.cgPath
+        xCoordinate.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
+        xCoordinate.lineWidth = 3
+        xCoordinate.zPosition = 4
+        self.addChild(xCoordinate)
+        
+        // draw scale on trigonometric graph
+        path3.move(to: CGPoint(x: self.frame.size.width/10, y: 0))
+        self.addChild(lineshape3)
+        for i in 1 ... 4{
+            path3.addLine(to: CGPoint(x: self.frame.size.width/10 * CGFloat(i), y: CGFloat(10)))
+            path3.move(to: CGPoint(x: self.frame.size.width/10 * CGFloat(i+1), y: 0))
+            lineshape3.path = path3
+            lineshape3.zPosition = 2
+            lineshape3.strokeColor = UIColor.black
+            lineshape3.lineWidth = 2
+            let label = SKLabelNode() // Size of Circle
+            label.position = CGPoint(x: self.frame.size.width/10 * CGFloat(i), y: -CGFloat(20)) //Middle of Screen
+            label.fontColor = UIColor.black
+            label.fontSize = 15
+            if i%2 == 0 {
+                label.text = "\(i/2)π"
+            }
+            else{
+                
+                label.text = "\(Double(i/2) + 0.5)π"
+            }
+            self.addChild(label)
+        }
     }
     
     @objc func updateTimer() {
@@ -243,9 +417,10 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         
         if pause == true {return}
         //240 ticks to finish 2pi
-        if sizeChosen == true && speedChosen == true && positionChosen == true{
+        if goPressed == true{
             
-            if rotationAngle >= 2 * Double.pi + rotationSpeed * deltaTime{
+//            if rotationAngle >= 2 * Double.pi + rotationSpeed * deltaTime{
+            if tickCount > 240{
                 ferrisWheelNode?.alpha = 0
                 playerNodeAd6!.alpha = 0
                 for i in 1 ... 5 {
@@ -255,35 +430,117 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
                     let positionY2 = (self.childNode(withName: "node\(i)") as! SKShapeNode).position.y
 //                    print(positionX1 - positionX2)
 //                    print(positionY1 - positionY2)
-                    if abs(Double(positionX1 - positionX2)) > 10 || abs(Double(positionY1 - positionY2)) > 10 {
+                    if abs(Double(positionX1 - positionX2)) > 15 || abs(Double(positionY1 - positionY2)) > 15 {
                         gameSuccess = false
-                        
                     }
                 }
                 
                 if gameSuccess == true {
-                    var number = applicationDelegate.levelRecordDictionary["level5"] as! [Int]
-                    //                        print(number[1])
-                    if self.heartsArray.count > number[0] {
-                        number[0] = self.heartsArray.count
+                    path1 = CGMutablePath()
+                    lineshape1.path = path1
+                    if timeToRemain == 0{
+                        run(Sound.applaud.action)
+                        (self.childNode(withName: "circle\(1)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "node\(1)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "circle\(2)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "node\(2)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "circle\(3)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "node\(3)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "circle\(4)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "node\(4)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "circle\(5)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        (self.childNode(withName: "node\(5)") as! SKShapeNode).run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        
+                        lineshape.run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        lineshape2.run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 8))
+                        
                     }
-                    if self.timerCount < number[1] {
-                        number[1] = self.timerCount
+                    timeToRemain = timeToRemain + 1
+                    if timeToRemain > 200 {
+                        var number = applicationDelegate.levelRecordDictionary["level5"] as! [Int]
+                        //                        print(number[1])
+                        if self.heartsArray.count > number[0] {
+                            number[0] = self.heartsArray.count
+                        }
+                        if self.timerCount < number[1] {
+                            number[1] = self.timerCount
+                        }
+                        applicationDelegate.levelRecordDictionary.setValue(number, forKey: "level5")
+                        
+                        let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
+                        gameSuccessScene?.scaleMode = .aspectFill
+                        gameSuccessScene!.performanceLevel = self.heartsArray.count
+                        gameSuccessScene!.level = 5
+                        self.view?.presentScene(gameSuccessScene!)
                     }
-                    applicationDelegate.levelRecordDictionary.setValue(number, forKey: "level5")
-                    
-                    let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
-                    gameSuccessScene?.scaleMode = .aspectFill
-                    gameSuccessScene!.performanceLevel = self.heartsArray.count
-                    gameSuccessScene!.level = 5
-                    self.view?.presentScene(gameSuccessScene!)
                 }
                 else{
                     loseHeart()
                     ferrisWheelNode!.position = CGPoint(x: -self.frame.size.width/4, y: 0)
-                    ferrisWheelNode?.setScale(0.4)
+                    ferrisWheelNode?.setScale(1)
                     ferrisWheelNode?.alpha = 1
                     ferrisWheelNode?.zRotation = 0
+                    arrowDirectionNode?.zRotation = 0
                     radius = Double(ferrisWheelNode!.frame.size.width*10/24)
                     playerNodeAd6!.position = CGPoint(x: -self.frame.size.width/4 + CGFloat(radius), y: 0)
                     playerNodeAd6!.setScale(0.2)
@@ -292,23 +549,24 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
                     path = CGMutablePath()
                     path.move(to: CGPoint(x: currentLocation.x, y: currentLocation.y))
                     lineshape.path = path
-                    sizeChosen = false
-                    speedChosen = false
-                    positionChosen = false
                     sizeSlideAction = false
                     speedSlideAction = false
                     moveAction = false
                     gameSuccess = true
+                    goPressed = false
                     slideButtonNode!.position = CGPoint(x: -self.frame.size.width/3, y: -self.frame.size.height * 3 / 8)
-                    speedSlideButtonNode!.position = CGPoint(x: self.frame.size.width/3, y: -self.frame.size.height * 3 / 8)
+                    speedSlideButtonNode!.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height * 3 / 8)
                     for i in 1 ... 5 {
                         if let child = self.childNode(withName: "node\(i)") as? SKShapeNode {
                             child.removeFromParent()
                         }
                     }
                     rotationAngle = 0
+                    tempAngle = 0
                     nodeNumber = 0
                     tickCount = 0
+                    path1 = CGMutablePath()
+                    lineshape1.path = path1
                 }
                 return
             }
@@ -331,10 +589,11 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
             
 //            print(sin(rotationAngle))
             let displacement = CGVector(dx: moveSpeed, dy: 0)
-            let move = SKAction.move(by: displacement, duration: 0)
-            ferrisWheelNode!.run(move)
+//            let move = SKAction.move(by: displacement, duration: 0)
+//            ferrisWheelNode!.run(move)
             
-            let movement = SKAction.move(to: CGPoint(x: currentLocation.x + displacement.dx + CGFloat(radius * (cos(rotationAngle) - 1)), y: CGFloat(radius * sin(rotationAngle))), duration: 0)
+//            let movement = SKAction.move(to: CGPoint(x: currentLocation.x + displacement.dx + CGFloat(radius * (cos(rotationAngle) - 1)), y: CGFloat(radius * sin(rotationAngle))), duration: 0)
+            let movement = SKAction.move(to: CGPoint(x: ferrisWheelNode!.position.x + CGFloat(radius * cos(rotationAngle)), y: CGFloat(radius * sin(rotationAngle))), duration: 0)
             playerNodeAd6?.run(movement)
             
             path.addLine(to: CGPoint(x: currentLocation.x + displacement.dx, y: CGFloat(radius * sin(rotationAngle))))
@@ -344,10 +603,11 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
             lineshape.path = path
             lineshape.strokeColor = UIColor.black
             lineshape.lineWidth = 3
-            lineshape.zPosition = 3
+            lineshape.zPosition = 4
             
             path1.move(to: CGPoint(x: currentLocation.x, y: CGFloat(radius * sin(rotationAngle))))
-            path1.addLine(to: CGPoint(x: currentLocation.x + CGFloat(radius * (cos(rotationAngle) - 1)), y: CGFloat(radius * sin(rotationAngle))))
+//            path1.addLine(to: CGPoint(x: currentLocation.x + CGFloat(radius * (cos(rotationAngle) - 1)), y: CGFloat(radius * sin(rotationAngle))))
+            path1.addLine(to: CGPoint(x: ferrisWheelNode!.position.x + CGFloat(radius * cos(rotationAngle)), y: CGFloat(radius * sin(rotationAngle))))
             lineshape1.path = path1
             lineshape1.zPosition = 4
             lineshape1.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
@@ -367,46 +627,167 @@ extension AdventureScene5{
             let location = touch.location(in: self)
             if self.atPoint(location) == self.slideButtonNode {
                 sizeSlideAction = true  //make this true so it will only move when you touch it.
-                if sizeChosen == true{
-                    sizeSlideAction = false
-                }
             }
             if self.atPoint(location) == self.speedSlideButtonNode {
                 speedSlideAction = true  //make this true so it will only move when you touch it.
-                if speedChosen == true{
-                    speedSlideAction = false
-                }
-            }
-            if self.atPoint(location) == self.ferrisWheelNode {
-                moveAction = true  //make this true so it will only move when you touch it.
-//                if speedChosen == true{
-//                    speedSlideAction = false
-//                }
             }
         }
         
         let touch = touches.first
         if let location = touch?.location(in: self){
             let nodesArray = self.nodes(at: location)
+            if nodesArray.first?.name == "arrowDirection"{
+                tempAngle = tempAngle + Double.pi/2
+                let action = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration: 0)
+                arrowDirectionNode?.run(action)
+                ferrisWheelNode?.run(action)
+                let movement = SKAction.move(to: CGPoint(x: ferrisWheelNode!.position.x + CGFloat(radius * cos(tempAngle)), y: CGFloat(radius * sin(tempAngle))), duration: 0)
+                playerNodeAd6?.run(movement)
+                rotationAngle = tempAngle
+            }
+            if nodesArray.first?.name == "goButton"{
+                currentLocation = CGPoint(x: 0, y:CGFloat(radius * sin(tempAngle)))
+                path.move(to: CGPoint(x: 0, y:CGFloat(radius * sin(tempAngle))))
+                goPressed = true
+            }
+            if nodesArray.first?.name == "okButton"{
+                if backOrReplay == "back"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertNode.alpha = 0
+                    alertLabelNode.zPosition = -6
+                    alertLabelNode.alpha = 0
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    okButtonNode!.alpha = 0
+                    cancelButtonNode!.alpha = 0
+                    let gameLevelScene = GameLevelScene(fileNamed: "GameLevelScene")
+                    gameLevelScene?.scaleMode = .aspectFill
+                    self.view?.presentScene(gameLevelScene!)
+                }
+                if backOrReplay == "replay"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertNode.alpha = 0
+                    alertLabelNode.zPosition = -6
+                    alertLabelNode.alpha = 0
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    okButtonNode!.alpha = 0
+                    cancelButtonNode!.alpha = 0
+                    let adventureScene5 = AdventureScene5(fileNamed: "AdventureScene5")
+                    adventureScene5?.scaleMode = .aspectFill
+                    self.view?.presentScene(adventureScene5!)
+                }
+            }
+            
+            if nodesArray.first?.name == "cancelButton"{
+                pause = false
+                alertNode.zPosition = -5
+                alertNode.alpha = 0
+                alertLabelNode.zPosition = -6
+                alertLabelNode.alpha = 0
+                okButtonNode!.zPosition = -6
+                cancelButtonNode!.zPosition = -6
+                okButtonNode!.alpha = 0
+                cancelButtonNode!.alpha = 0
+            }
             
             if nodesArray.first?.name == "backButton"{
-                pause = true
-                showAlertBack(withTitle: "Go Back", message: "Do you want to go back to Game Level Scene")
+                if pause == false {
+                    pause = true
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    backOrReplay = "back"
+                    alertNode.zPosition = 5
+                    alertNode.alpha = 1
+                    alertLabelNode.text = "Do you want to go back to levels?"
+                    alertLabelNode.zPosition = 6
+                    alertLabelNode.alpha = 1
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                    okButtonNode!.alpha = 1
+                    cancelButtonNode!.alpha = 1
+                }
             }
             if nodesArray.first?.name == "pauseButton"{
+                if pause == false{
+                    pause = true
+                    pauseButtonNode?.zPosition = -2
+                    pauseButtonNode!.alpha = 0
+                    resumeButtonNode?.zPosition = 2
+                    resumeButtonNode!.alpha = 0
+                    resumeButtonNode?.run(SKAction.repeatForever(.sequence([
+                        .fadeAlpha(to: 0.2, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        .fadeAlpha(to: 1.0, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        ])))
+                }
+            }
+            if nodesArray.first?.name == "resumeButton"{
                 //pause all variables about time.
-                pause = true
-                showAlertResume(withTitle: "Resume", message: "Do you want to resume now?")
+                if pause == true{
+                    pause = false
+                    //                    timer.invalidate()
+                    //                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
+                    pauseButtonNode?.zPosition = 2
+                    resumeButtonNode?.zPosition = -2
+                    resumeButtonNode?.removeAllActions()
+                    pauseButtonNode!.alpha = 1
+                    resumeButtonNode!.alpha = 0
+                }
             }
             if nodesArray.first?.name == "replayButton"{
-                pause = true
-                showAlertReplay(withTitle: "Replay", message: "Do you want to replay now?")
+                if pause == false {
+                    pause = true
+                    backOrReplay = "replay"
+                    
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    alertNode.zPosition = 5
+                    alertNode.alpha = 1
+                    alertLabelNode.text = "Do you want to replay this game?"
+                    alertLabelNode.zPosition = 6
+                    alertLabelNode.alpha = 1
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                    okButtonNode!.alpha = 1
+                    cancelButtonNode!.alpha = 1
+                }
+            }
+            if nodesArray.first?.name == "questionButton"{
+                
+                if tutorialShow == false {
+                    //show tutorial
+                    if pause == true {return}
+                    pause = true
+                    tutorialShow = true
+                    tutorialNode?.zPosition = 5
+                    tutorialTitleNode.zPosition = 6
+                    tutorialLabelNode.zPosition = 6
+                    tutorialNode?.alpha = 1
+                    tutorialTitleNode.alpha = 1
+                    tutorialLabelNode.alpha = 1
+                    
+                }
+                else{
+                    if tutorialShow == true {
+                        tutorialShow = false
+                        pause = false
+                        //hiden tutorial
+                        tutorialNode?.zPosition = -5
+                        tutorialTitleNode.zPosition = -6
+                        tutorialLabelNode.zPosition = -6
+                        tutorialNode?.alpha = 0
+                        tutorialTitleNode.alpha = 0
+                        tutorialLabelNode.alpha = 0
+                    }
+                }
             }
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if sizeSlideAction == false && speedSlideAction == false && moveAction == false { return }
+        if sizeSlideAction == false && speedSlideAction == false { return }
         
         if sizeSlideAction {
             for touch in touches{
@@ -420,13 +801,11 @@ extension AdventureScene5{
                 else{
                     slideButtonNode!.position = CGPoint(x: position.x, y: -self.frame.size.height * 3 / 8)
                 }
-                let scale = 0.2 + (slideButtonNode!.position.x - (slideBarNode!.position.x - slideBarNode!.frame.size.width/2))/slideBarNode!.frame.size.width * 0.4
+                let scale = 0.5 + (slideButtonNode!.position.x - (slideBarNode!.position.x - slideBarNode!.frame.size.width/2))/slideBarNode!.frame.size.width * 1
                 ferrisWheelNode!.setScale(scale)
-                playerNodeAd6!.setScale(0.5*scale)
+                playerNodeAd6!.setScale(0.2*scale)
                 radius = Double(ferrisWheelNode!.frame.size.width*10/24)
-                playerNodeAd6!.position = CGPoint(x: (ferrisWheelNode?.position.x)! + CGFloat(radius), y: 0)
-                currentLocation = CGPoint(x: (ferrisWheelNode?.position.x)! + CGFloat(radius),y:0)
-                path.move(to: CGPoint(x: currentLocation.x, y: currentLocation.y))
+                playerNodeAd6!.position = CGPoint(x: ferrisWheelNode!.position.x + CGFloat(radius * cos(tempAngle)), y: CGFloat(radius * sin(tempAngle)))
             }
         }
             
@@ -446,32 +825,17 @@ extension AdventureScene5{
                 moveSpeed = 1/1200 * self.frame.size.width + (speedSlideButtonNode!.position.x - (speedSlideBarNode!.position.x - speedSlideBarNode!.frame.size.width/2))/speedSlideBarNode!.frame.size.width * 1/1200 * self.frame.size.width
             }
         }
-        
-        if moveAction {
-            for touch in touches{
-                let position = touch.location(in: self)
-                ferrisWheelNode!.position = CGPoint(x: position.x, y: 0)
-                playerNodeAd6!.position = CGPoint(x: (ferrisWheelNode?.position.x)! + CGFloat(radius), y: 0)
-                currentLocation = CGPoint(x: (ferrisWheelNode?.position.x)! + CGFloat(radius),y:0)
-                path.move(to: CGPoint(x: currentLocation.x, y: currentLocation.y))
-            }
-        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches{
             if sizeSlideAction {
-                sizeChosen = true
+                sizeSlideAction = false
             }
-            sizeSlideAction = false
+            
             if speedSlideAction{
-                speedChosen = true
+                speedSlideAction = false
             }
-            speedSlideAction = false
-            if moveAction{
-                positionChosen = true
-            }
-            moveAction = false
         }
     }
 }
@@ -480,6 +844,16 @@ extension AdventureScene5{
 
 // Alert Action
 extension AdventureScene5{
+    func showAlertPlaying(withTitle title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "Ok", style: .cancel) { _ in
+        }
+        alertController.addAction(okAction)
+        
+        view?.window?.rootViewController?.present(alertController, animated: true)
+    }
+    
     func showAlertResume(withTitle title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
@@ -531,5 +905,22 @@ extension AdventureScene5{
         view?.window?.rootViewController?.present(alertController, animated: true)
     }
 }
+
+
+extension UIBezierPath {
+    func addArrow5(start: CGPoint, end: CGPoint, pointerLineLength: CGFloat, arrowAngle: CGFloat) {
+        self.move(to: start)
+        self.addLine(to: end)
+        
+        let startEndAngle = atan((end.y - start.y) / (end.x - start.x)) + ((end.x - start.x) < 0 ? CGFloat(Double.pi) : 0)
+        let arrowLine1 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle + arrowAngle), y: end.y - pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle + arrowAngle))
+        let arrowLine2 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle - arrowAngle), y: end.y - pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle - arrowAngle))
+        
+        self.addLine(to: arrowLine1)
+        self.move(to: end)
+        self.addLine(to: arrowLine2)
+    }
+}
+
 
 

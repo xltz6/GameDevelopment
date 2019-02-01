@@ -20,10 +20,20 @@ class AdventureScene: SKScene {
     var flagNode: SKNode?
     var backButtonNode: SKNode?
     var pauseButtonNode: SKNode?
+    var resumeButtonNode: SKNode?
+    var woodNode: SKNode?
     var replayButtonNode: SKNode?
+    var questionButtonNode: SKNode?
+    var okButtonNode: SKNode?
+    var cancelButtonNode: SKNode?
     var endZoneNodeRight: SKNode?
     var endZoneNodeUp: SKNode?
     var functionLabel = SKLabelNode()
+    var alertLabelNode = SKLabelNode()
+    var alertNode = SKShapeNode()
+    var tutorialNode: SKNode?
+    var tutorialTitleNode = SKLabelNode()
+    var tutorialLabelNode = SKLabelNode()
     
     var path = CGMutablePath()
     let shape = SKShapeNode()
@@ -38,6 +48,8 @@ class AdventureScene: SKScene {
     var timeCounterLabel: SKLabelNode!
     
     // varibles:
+    var backOrReplay = "back"
+    var touchflag = false
     var joystickAction = false
     var knobRadius: CGFloat = 100
     var joystickFrozen = true
@@ -47,6 +59,7 @@ class AdventureScene: SKScene {
     var timer = Timer()
     var isPlaying = false
     var pause = false
+    var tutorialShow = false
     
     //Hearts
     var heartsArray: [SKSpriteNode]!
@@ -85,18 +98,86 @@ class AdventureScene: SKScene {
         flagNode = self.childNode(withName: "flag")
         flagNode?.zPosition = 1
         let randomXPosition = CGFloat(arc4random_uniform(UInt32(70)))
-        flagNode?.position = CGPoint(x: self.frame.size.width/2 - 80 - randomXPosition*4, y: self.frame.size.height/2 - 100)
+        flagNode?.position = CGPoint(x: self.frame.size.width/2 - 80 - randomXPosition*4, y: self.frame.size.height/2 - self.frame.size.height/7)
         
+        woodNode = self.childNode(withName: "wood")
+        woodNode!.position = CGPoint(x: -self.frame.size.width/2 + woodNode!.frame.size.width/2 + self.frame.size.width/20, y: 0)
+        woodNode!.zPosition = 3
         
         backButtonNode = self.childNode(withName: "backButton")
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
         backButtonNode?.zPosition = 2
+        
         pauseButtonNode = self.childNode(withName: "pauseButton")
-        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
+        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (pauseButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         pauseButtonNode?.zPosition = 2
+        
+        resumeButtonNode = self.childNode(withName: "resumeButton")
+        resumeButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (resumeButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (resumeButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
+        resumeButtonNode?.zPosition = -3
+        
         replayButtonNode = self.childNode(withName: "replayButton")
-        replayButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/12)
+        replayButtonNode?.position = CGPoint(x: self.frame.size.width/3 - (replayButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         replayButtonNode?.zPosition = 2
+        
+        questionButtonNode = self.childNode(withName: "questionButton")
+        questionButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11)
+        questionButtonNode?.zPosition = 2
+        
+        tutorialNode = self.childNode(withName: "tutorialbg")
+        tutorialNode!.zPosition = -5
+        tutorialNode!.alpha = 0
+        tutorialNode!.position = CGPoint(x: 0, y: 0)
+        
+        tutorialTitleNode.horizontalAlignmentMode = .center
+        tutorialTitleNode.verticalAlignmentMode = .center
+        tutorialTitleNode.position = CGPoint(x: 0, y: self.frame.size.height/8-10)
+        tutorialTitleNode.fontName = "Arial"
+        tutorialTitleNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialTitleNode.fontSize = 26
+        tutorialTitleNode.text = "How to Play!"
+        tutorialTitleNode.zPosition = -6
+        tutorialTitleNode.alpha = 0
+        self.addChild(tutorialTitleNode)
+        
+        tutorialLabelNode.horizontalAlignmentMode = .center
+        tutorialLabelNode.verticalAlignmentMode = .center
+        tutorialLabelNode.position = CGPoint(x: 0, y: -15)
+        tutorialLabelNode.fontName = "Arial"
+        tutorialLabelNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1)
+        tutorialLabelNode.fontSize = 20
+        tutorialLabelNode.text = "   Use the joystick to control player going up and down. Your goal is to go across the river and reach the flag! Failing to get to the correct destination will lose a heart. You have three lives for this game. Remember the river has a speed."
+        tutorialLabelNode.numberOfLines = 5
+        tutorialLabelNode.preferredMaxLayoutWidth = self.frame.size.width/3
+        tutorialLabelNode.zPosition = -6
+        tutorialLabelNode.alpha = 0
+        self.addChild(tutorialLabelNode)
+        
+        alertNode = SKShapeNode(rectOf: CGSize(width: self.frame.size.width/4, height: self.frame.size.height/6), cornerRadius: 20)
+        alertNode.zPosition = -5
+        alertNode.position = CGPoint(x: 0, y: self.frame.size.height/25)
+        alertNode.fillColor = UIColor(red:0.60, green:0.78, blue:0.20, alpha:1.0)
+        self.addChild(alertNode)
+        
+        alertLabelNode.horizontalAlignmentMode = .center
+        alertLabelNode.verticalAlignmentMode = .center
+        alertLabelNode.position = CGPoint(x: 0, y: self.frame.size.height/15)
+        alertLabelNode.fontName = "Arial"
+        alertLabelNode.fontColor = UIColor.black
+        alertLabelNode.fontSize = 20
+        alertLabelNode.text = "Do you want to go back to levels?"
+        alertLabelNode.numberOfLines = 5
+        alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
+        alertLabelNode.zPosition = -6
+        self.addChild(alertLabelNode)
+        
+        okButtonNode = self.childNode(withName: "okButton")
+        okButtonNode!.position = CGPoint(x: self.frame.size.width/16, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4)
+        okButtonNode?.zPosition = -6
+        
+        cancelButtonNode = self.childNode(withName: "cancelButton")
+        cancelButtonNode!.position = CGPoint(x: -self.frame.size.width/16, y: self.frame.size.height/25 - cancelButtonNode!.frame.size.height*3/4)
+        cancelButtonNode?.zPosition = -6
         
         endZoneNodeRight = self.childNode(withName: "endZone")
         
@@ -118,7 +199,7 @@ class AdventureScene: SKScene {
         countdownLabel.fontName = "AvenirNext-Bold"
         countdownLabel.fontColor = SKColor.black
         countdownLabel.fontSize = self.frame.size.height / 3
-        countdownLabel.zPosition = 6
+        countdownLabel.zPosition = 4
         self.addChild(countdownLabel)
         countdown(count: 3)
 
@@ -129,7 +210,7 @@ class AdventureScene: SKScene {
         functionLabel.horizontalAlignmentMode = .center
         functionLabel.verticalAlignmentMode = .center
         functionLabel.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/5 * 2)
-        functionLabel.fontName = "AvenirNext"
+        functionLabel.fontName = "Arial"
         functionLabel.fontColor = SKColor.black
         functionLabel.fontSize = 20
         functionLabel.text = "Linear Function"
@@ -211,19 +292,115 @@ extension AdventureScene{
         if let location = touch?.location(in: self){
             let nodesArray = self.nodes(at: location)
             
+            if nodesArray.first?.name == "okButton"{
+                if backOrReplay == "back"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertLabelNode.zPosition = -6
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    let gameLevelScene = GameLevelScene(fileNamed: "GameLevelScene")
+                    gameLevelScene?.scaleMode = .aspectFill
+                    self.view?.presentScene(gameLevelScene!)
+                }
+                if backOrReplay == "replay"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertLabelNode.zPosition = -6
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    let adventureScene = AdventureScene(fileNamed: "AdventureScene")
+                    adventureScene?.scaleMode = .aspectFill
+                    self.view?.presentScene(adventureScene!)
+                }
+            }
+            if nodesArray.first?.name == "cancelButton"{
+                pause = false
+                alertNode.zPosition = -5
+                alertLabelNode.zPosition = -6
+                okButtonNode!.zPosition = -6
+                cancelButtonNode!.zPosition = -6
+            }
+            
             if nodesArray.first?.name == "backButton"{
-                pause = true
-                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                if pause == false {
+                    pause = true
+    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    backOrReplay = "back"
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "Do you want to go back to levels?"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                }
             }
             if nodesArray.first?.name == "pauseButton"{
                 //pause all variables about time.
-                pause = true
-                timer.invalidate()
-                showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
+                if pause == false{
+                    pause = true
+//                    timer.invalidate()
+//                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
+                    pauseButtonNode?.zPosition = -2
+                    resumeButtonNode?.zPosition = 2
+                    resumeButtonNode?.run(SKAction.repeatForever(.sequence([
+                        .fadeAlpha(to: 0.2, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        .fadeAlpha(to: 1.0, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        ])))
+                }
+            }
+            if nodesArray.first?.name == "resumeButton"{
+                //pause all variables about time.
+                if pause == true{
+                    pause = false
+                    //                    timer.invalidate()
+                    //                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
+                    pauseButtonNode?.zPosition = 2
+                    resumeButtonNode?.zPosition = -2
+                }
             }
             if nodesArray.first?.name == "replayButton"{
-                pause = true
-                showAlertReplay(withTitle: "Alert", message: "Do you want replay now?")
+//                print("replay")
+                if pause == false {
+                    pause = true
+                    backOrReplay = "replay"
+
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "Do you want to replay this game?"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                }
+            }
+            if nodesArray.first?.name == "questionButton"{
+                if tutorialShow == false {
+                    //show tutorial
+                    if pause == true {return}
+                    pause = true
+                    tutorialShow = true
+                    tutorialNode?.zPosition = 5
+                    tutorialTitleNode.zPosition = 6
+                    tutorialLabelNode.zPosition = 6
+                    tutorialNode?.alpha = 1
+                    tutorialTitleNode.alpha = 1
+                    tutorialLabelNode.alpha = 1
+                    
+                }
+                else{
+                    if tutorialShow == true {
+                        tutorialShow = false
+                        pause = false
+                        //hiden tutorial
+                        tutorialNode?.zPosition = -5
+                        tutorialTitleNode.zPosition = -6
+                        tutorialLabelNode.zPosition = -6
+                        tutorialNode?.alpha = 0
+                        tutorialTitleNode.alpha = 0
+                        tutorialLabelNode.alpha = 0
+                    }
+                }
             }
         }
     }
@@ -361,6 +538,10 @@ extension AdventureScene{
     override func update(_ currentTime: TimeInterval) {
         let deltaTime = currentTime - previousTimeInterval
         previousTimeInterval = currentTime
+        if deltaTime < 0.1{
+            let woodmovement = CGVector(dx: (CGFloat)(deltaTime * 8.0 * waterspeed), dy: 0)
+            woodNode!.run(SKAction.move(by: woodmovement, duration: 0))
+        }
         
         if pause == true{
 //            print("stop timer")
@@ -376,7 +557,7 @@ extension AdventureScene{
         
         guard let joystickKnob = joystickKnob else{ return}
         
-        if joystickFrozen == false && pause == false{
+        if joystickFrozen == false && pause == false && touchflag == false{
             
             let yPosition = Double(joystickKnob.position.y)
             let displacement = CGVector(dx: (CGFloat)(deltaTime * 8.0 * waterspeed), dy: (CGFloat)(deltaTime * yPosition * playerspeed))
@@ -428,11 +609,21 @@ extension AdventureScene: SKPhysicsContactDelegate{
         playerNboat!.run(loss)
         path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
         currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+        woodNode!.position = CGPoint(x: -self.frame.size.width/2 + woodNode!.frame.size.width/2 + self.frame.size.width/20, y: 0)
         loseHeart()
         countdown(count: 3)
     }
     
     func playerTouchFlag(playerNboat: SKNode, flagNode: SKNode){
+        touchflag = true
+        run(Sound.applaud.action)
+        lineShape.run(SKAction.repeat(.sequence([
+            .fadeAlpha(to: 0.2, duration: 0.05),
+            .wait(forDuration: 0.1),
+            .fadeAlpha(to: 1.0, duration: 0.05),
+            .wait(forDuration: 0.1),
+            ]), count: 6))
+        
         //update the plist file
         var number = applicationDelegate.levelRecordDictionary["level1"] as! [Int]
         print(number[1])
@@ -445,14 +636,19 @@ extension AdventureScene: SKPhysicsContactDelegate{
         print(self.timerCount)
         print(number)
         applicationDelegate.levelRecordDictionary.setValue(number, forKey: "level1")
-
-        let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
-        gameSuccessScene?.scaleMode = .aspectFill
-        gameSuccessScene!.performanceLevel = self.heartsArray.count
-        gameSuccessScene!.level = 0
-        self.view?.presentScene(gameSuccessScene!)
+        delay(1.8){
+            let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
+            gameSuccessScene?.scaleMode = .aspectFill
+            gameSuccessScene!.performanceLevel = self.heartsArray.count
+            gameSuccessScene!.level = 0
+            self.view?.presentScene(gameSuccessScene!)
+        }
     }
     
+    func delay(_ delay:Double, closure:@escaping ()->()) {
+        let when = DispatchTime.now() + delay
+        DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
+    }
 }
 
 // Alert Action
@@ -485,7 +681,19 @@ extension AdventureScene{
         }
         alertController.addAction(okAction)
         
-        view?.window?.rootViewController?.present(alertController, animated: true)
+        let vc = self.scene?.view?.window?.rootViewController
+        vc?.show(alertController, sender: nil)
+        if vc?.presentingViewController == nil {
+            print("hello")
+        }
+        if vc!.presentedViewController == nil {
+            print("could present")
+            vc!.present(alertController, animated: true, completion: nil)
+        }
+        else{
+            print("there is a view controller")
+        }
+//        view?.window?.rootViewController?.present(alertController, animated: true)
     }
     
     func showAlertReplay(withTitle title: String, message: String){
@@ -507,6 +715,35 @@ extension AdventureScene{
         
         view?.window?.rootViewController?.present(alertController, animated: true)
     }
+    
+//    func showAlertTutorial(withTitle title: String, message: String){
+//
+//        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//
+//        alertController.view.frame = CGRect(x: 0, y: 0, width: self.frame.size.width/2, height: self.frame.size.height/2)
+//
+////        alertController.view.tintColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.4)
+//
+//        let messageMutableString = NSMutableAttributedString(string: message, attributes: [NSAttributedString.Key.font:UIFont(name: "Arial", size: 20.0)!])
+//        let titleMutableString = NSMutableAttributedString(string: title, attributes: [NSAttributedString.Key.font:UIFont(name: "Arial", size: 26.0)!])
+////        messageMutableString.addAttribute(NSAttributedString.Key.foregroundColor,
+////                                          value: UIColor.orange,
+////                                          range: NSRange(location: 0, length: message.characters.count));
+//
+//        alertController.setValue(messageMutableString, forKey: "attributedMessage")
+//        alertController.setValue(titleMutableString, forKey: "attributedTitle");
+//
+////        alertController.preferredContentSize = CGSize(width: self.frame.size.width/2, height: self.frame.size.height/2)
+//
+//
+//
+//        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
+//            self.pause = false
+//        }
+//        alertController.addAction(okAction)
+//
+//        view?.window?.rootViewController?.present(alertController, animated: true)
+//    }
 }
 
 //protocol Alertable { }

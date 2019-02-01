@@ -25,6 +25,15 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     var speedButtonNode: SKNode?
     var endZoneNode: SKNode?
     var functionLabel = SKLabelNode()
+    var questionButtonNode: SKNode?
+    var tutorialNode: SKNode?
+    var tutorialTitleNode = SKLabelNode()
+    var tutorialLabelNode = SKLabelNode()
+    var resumeButtonNode: SKNode?
+    var okButtonNode: SKNode?
+    var cancelButtonNode: SKNode?
+    var alertLabelNode = SKLabelNode()
+    var alertNode = SKShapeNode()
     
 //    var cameraNode: SKCameraNode?
     var timeCounterLabel: SKLabelNode!
@@ -37,6 +46,8 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     var isPlaying = false
     var directionChosen = false
     var speedChosen = false
+    var tutorialShow = false
+    var backOrReplay = "back"
     var previousTimeInterval: TimeInterval = 0
     var previousCharacterNodeX: CGFloat = 0
     var previousCharacterNodeY: CGFloat = 0
@@ -133,11 +144,75 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
         backButtonNode?.zPosition = 2
         pauseButtonNode = self.childNode(withName: "pauseButton")
-        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
+        pauseButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (pauseButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         pauseButtonNode?.zPosition = 2
+        
+        resumeButtonNode = self.childNode(withName: "resumeButton")
+        resumeButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/30 - (resumeButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (resumeButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
+        resumeButtonNode?.zPosition = -3
+        
         replayButtonNode = self.childNode(withName: "replayButton")
-        replayButtonNode?.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/25, y: self.frame.size.height/2 - (pauseButtonNode?.frame.size.height)!/2 - self.frame.size.width/12)
+        replayButtonNode?.position = CGPoint(x: self.frame.size.width/3 - (replayButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         replayButtonNode?.zPosition = 2
+        
+        questionButtonNode = self.childNode(withName: "questionButton")
+        questionButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11)
+        questionButtonNode?.zPosition = 2
+        
+        tutorialNode = self.childNode(withName: "tutorialbg")
+        tutorialNode!.zPosition = -5
+        tutorialNode!.alpha = 0
+        tutorialNode!.position = CGPoint(x: 0, y: 0)
+        
+        tutorialTitleNode.horizontalAlignmentMode = .center
+        tutorialTitleNode.verticalAlignmentMode = .center
+        tutorialTitleNode.position = CGPoint(x: 0, y: self.frame.size.height/8-10)
+        tutorialTitleNode.fontName = "Arial"
+        tutorialTitleNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialTitleNode.fontSize = 26
+        tutorialTitleNode.text = "How to Play!"
+        tutorialTitleNode.zPosition = -6
+        tutorialTitleNode.alpha = 0
+        self.addChild(tutorialTitleNode)
+        
+        tutorialLabelNode.horizontalAlignmentMode = .center
+        tutorialLabelNode.verticalAlignmentMode = .center
+        tutorialLabelNode.position = CGPoint(x: 0, y: -15)
+        tutorialLabelNode.fontName = "Arial"
+        tutorialLabelNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
+        tutorialLabelNode.fontSize = 20
+        tutorialLabelNode.text = "   Choose the moving direction and speed by clicking two buttons. Your goal is to jump across the river and reach the the other side of the mountain! Drop into water and jump too far away will lose a heart. You could try three times for this game."
+        tutorialLabelNode.numberOfLines = 5
+        tutorialLabelNode.preferredMaxLayoutWidth = self.frame.size.width/3
+        tutorialLabelNode.zPosition = -6
+        tutorialLabelNode.alpha = 0
+        self.addChild(tutorialLabelNode)
+        
+        alertNode = SKShapeNode(rectOf: CGSize(width: self.frame.size.width/4, height: self.frame.size.height/6), cornerRadius: 20)
+        alertNode.zPosition = -5
+        alertNode.position = CGPoint(x: 0, y: self.frame.size.height/25)
+        alertNode.fillColor = UIColor(red:0.60, green:0.78, blue:0.20, alpha:1.0)
+        self.addChild(alertNode)
+        
+        alertLabelNode.horizontalAlignmentMode = .center
+        alertLabelNode.verticalAlignmentMode = .center
+        alertLabelNode.position = CGPoint(x: 0, y: self.frame.size.height/15)
+        alertLabelNode.fontName = "Arial"
+        alertLabelNode.fontColor = UIColor.black
+        alertLabelNode.fontSize = 20
+        alertLabelNode.text = "Do you want to go back to levels?"
+        alertLabelNode.numberOfLines = 5
+        alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
+        alertLabelNode.zPosition = -6
+        self.addChild(alertLabelNode)
+        
+        okButtonNode = self.childNode(withName: "okButton")
+        okButtonNode!.position = CGPoint(x: self.frame.size.width/16, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4)
+        okButtonNode?.zPosition = -6
+        
+        cancelButtonNode = self.childNode(withName: "cancelButton")
+        cancelButtonNode!.position = CGPoint(x: -self.frame.size.width/16, y: self.frame.size.height/25 - cancelButtonNode!.frame.size.height*3/4)
+        cancelButtonNode?.zPosition = -6
         
         directionNode = self.childNode(withName: "direction")
         directionNode?.zPosition = 3
@@ -364,7 +439,8 @@ extension AdventureScene2{
                 isPlaying = false
                 
                 let loss = SKAction.move(to: CGPoint(x: 100 + characterNode.frame.size.width/2 - self.frame.size.width/2, y: 100), duration: 0.0)
-                characterNode.run(SKAction.sequence([.wait(forDuration: 1.5), loss]))
+                let rotation = SKAction.rotate(toAngle: angle, duration: 0.0)
+                characterNode.run(SKAction.sequence([.wait(forDuration: 1.5), loss, rotation]))
             
                 self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
                 characterNode.physicsBody?.velocity =  CGVector()
@@ -379,19 +455,28 @@ extension AdventureScene2{
                 directionNode?.zRotation = 0
                 speedNode?.xScale = 0.323
                 
-                let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
-                let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
-                let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
-                let repeatAction1 = SKAction.repeatForever(sequence1)
-                directionNode!.run(repeatAction1)
-                
-                let action3 = SKAction.scaleX(to: speedNode!.xScale * 5.6, duration: 1.5)
-                let action4 = SKAction.scaleX(to: speedNode!.xScale, duration: 1.5)
-                let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
-                let repeatAction2 = SKAction.repeatForever(sequence2)
-                speedNode!.run(repeatAction2)
+                delay(1.5){
+                    let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
+                    let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
+                    let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
+                    let repeatAction1 = SKAction.repeatForever(sequence1)
+                    self.directionNode!.run(repeatAction1)
+                    
+                    let action3 = SKAction.scaleX(to: self.speedNode!.xScale * 5.6, duration: 1.5)
+                    let action4 = SKAction.scaleX(to: self.speedNode!.xScale, duration: 1.5)
+                    let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
+                    let repeatAction2 = SKAction.repeatForever(sequence2)
+                    self.speedNode!.run(repeatAction2)
+                }
             }
             if characterNode.position.x > mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) && characterNode.position.x <= mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/9 {
+                run(Sound.applaud.action)
+                lineShape.run(SKAction.repeat(.sequence([
+                    .fadeAlpha(to: 0.2, duration: 0.05),
+                    .wait(forDuration: 0.1),
+                    .fadeAlpha(to: 1.0, duration: 0.05),
+                    .wait(forDuration: 0.1),
+                    ]), count: 6))
                 var number = applicationDelegate.levelRecordDictionary["level2"] as! [Int]
                 print(number[1])
                 if self.heartsArray.count > number[0] {
@@ -403,12 +488,14 @@ extension AdventureScene2{
 //                print(self.timerCount)
 //                print(number)
                 applicationDelegate.levelRecordDictionary.setValue(number, forKey: "level2")
-                
-                let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
-                gameSuccessScene?.scaleMode = .aspectFill
-                gameSuccessScene!.performanceLevel = self.heartsArray.count
-                gameSuccessScene!.level = 2
-                self.view?.presentScene(gameSuccessScene!)
+
+                delay(1.8){
+                    let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
+                    gameSuccessScene?.scaleMode = .aspectFill
+                    gameSuccessScene!.performanceLevel = self.heartsArray.count
+                    gameSuccessScene!.level = 2
+                    self.view?.presentScene(gameSuccessScene!)
+                }
             }
         }
     }
@@ -425,7 +512,8 @@ extension AdventureScene2{
             force = false
             isPlaying = false
             let loss = SKAction.move(to: CGPoint(x: 100 + characterNode.frame.size.width/2 - self.frame.size.width/2, y: 100), duration: 0.0)
-            characterNode.run(SKAction.sequence([.wait(forDuration: 3), loss]))
+            let rotation = SKAction.rotate(toAngle: angle, duration: 0.0)
+            characterNode.run(SKAction.sequence([.wait(forDuration: 1.5), loss, rotation]))
             
 
             self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
@@ -440,19 +528,25 @@ extension AdventureScene2{
             
             directionNode?.zRotation = 0
             speedNode?.xScale = 0.323
-            
-            let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
-            let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
-            let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
-            let repeatAction1 = SKAction.repeatForever(sequence1)
-            directionNode!.run(repeatAction1)
-            
-            let action3 = SKAction.scaleX(to: speedNode!.xScale * 5.6, duration: 1.5)
-            let action4 = SKAction.scaleX(to: speedNode!.xScale, duration: 1.5)
-            let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
-            let repeatAction2 = SKAction.repeatForever(sequence2)
-            speedNode!.run(repeatAction2)
+            delay(1.5){
+                let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
+                let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
+                let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
+                let repeatAction1 = SKAction.repeatForever(sequence1)
+                self.directionNode!.run(repeatAction1)
+                
+                let action3 = SKAction.scaleX(to: self.speedNode!.xScale * 5.6, duration: 1.5)
+                let action4 = SKAction.scaleX(to: self.speedNode!.xScale, duration: 1.5)
+                let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
+                let repeatAction2 = SKAction.repeatForever(sequence2)
+                self.speedNode!.run(repeatAction2)
+            }
         }
+    }
+    
+    func delay(_ delay:Double, closure:@escaping ()->()) {
+        let when = DispatchTime.now() + delay
+        DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
     }
 }
 
@@ -473,19 +567,119 @@ extension AdventureScene2{
                 speedChosen = true
             }
             
+            if nodesArray.first?.name == "okButton"{
+                if backOrReplay == "back"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertLabelNode.zPosition = -6
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    let gameLevelScene = GameLevelScene(fileNamed: "GameLevelScene")
+                    gameLevelScene?.scaleMode = .aspectFill
+                    self.view?.presentScene(gameLevelScene!)
+                }
+                if backOrReplay == "replay"{
+                    pause = false
+                    alertNode.zPosition = -5
+                    alertLabelNode.zPosition = -6
+                    okButtonNode!.zPosition = -6
+                    cancelButtonNode!.zPosition = -6
+                    let adventureScene2 = AdventureScene2(fileNamed: "AdventureScene2")
+                    adventureScene2?.scaleMode = .aspectFill
+                    self.view?.presentScene(adventureScene2!)
+                }
+            }
+            
+            if nodesArray.first?.name == "cancelButton"{
+                pause = false
+                alertNode.zPosition = -5
+                alertLabelNode.zPosition = -6
+                okButtonNode!.zPosition = -6
+                cancelButtonNode!.zPosition = -6
+            }
+             
             if nodesArray.first?.name == "backButton"{
-                pause = true
-                showAlertBack(withTitle: "Go Back", message: "Do you want to go back to Game Level Scene")
+                if pause == false {
+                    pause = true
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    backOrReplay = "back"
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "Do you want to go back to levels?"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                }
             }
             if nodesArray.first?.name == "pauseButton"{
                 //pause all variables about time.
-                pause = true
-//                ]timer.invalidate()
-                showAlertResume(withTitle: "Resume", message: "Do you want to resume now?")
+                if pause == false{
+                    pause = true
+                    pauseButtonNode?.zPosition = -2
+                    pauseButtonNode!.alpha = 0
+                    resumeButtonNode?.zPosition = 2
+                    resumeButtonNode!.alpha = 0
+                    resumeButtonNode?.run(SKAction.repeatForever(.sequence([
+                        .fadeAlpha(to: 0.2, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        .fadeAlpha(to: 1.0, duration: 0.05),
+                        .wait(forDuration: 0.2),
+                        ])))
+                }
+            }
+            if nodesArray.first?.name == "resumeButton"{
+                //pause all variables about time.
+                if pause == true{
+                    pause = false
+                    //                    timer.invalidate()
+                    //                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
+                    pauseButtonNode?.zPosition = 2
+                    resumeButtonNode?.zPosition = -2
+                    resumeButtonNode?.removeAllActions()
+                    pauseButtonNode!.alpha = 1
+                    resumeButtonNode!.alpha = 0
+                }
             }
             if nodesArray.first?.name == "replayButton"{
-                pause = true
-                showAlertReplay(withTitle: "Replay", message: "Do you want to replay now?")
+                if pause == false {
+                    pause = true
+                    backOrReplay = "replay"
+                    
+                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
+                    alertNode.zPosition = 5
+                    alertLabelNode.text = "Do you want to replay this game?"
+                    alertLabelNode.zPosition = 6
+                    okButtonNode!.zPosition = 6
+                    cancelButtonNode!.zPosition = 6
+                }
+            }
+            if nodesArray.first?.name == "questionButton"{
+                
+                if tutorialShow == false {
+                    //show tutorial
+                    if pause == true {return}
+                    pause = true
+                    tutorialShow = true
+                    tutorialNode?.zPosition = 5
+                    tutorialTitleNode.zPosition = 6
+                    tutorialLabelNode.zPosition = 6
+                    tutorialNode?.alpha = 1
+                    tutorialTitleNode.alpha = 1
+                    tutorialLabelNode.alpha = 1
+                    
+                }
+                else{
+                    if tutorialShow == true {
+                        tutorialShow = false
+                        pause = false
+                        //hiden tutorial
+                        tutorialNode?.zPosition = -5
+                        tutorialTitleNode.zPosition = -6
+                        tutorialLabelNode.zPosition = -6
+                        tutorialNode?.alpha = 0
+                        tutorialTitleNode.alpha = 0
+                        tutorialLabelNode.alpha = 0
+                    }
+                }
             }
         }
     }

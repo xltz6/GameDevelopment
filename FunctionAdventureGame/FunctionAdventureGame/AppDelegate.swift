@@ -78,6 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Write the NSMutableDictionary to the CountryCities.plist file in the Document directory
         levelRecordDictionary.write(toFile: plistFilePathInDocumentDirectory, atomically: true)
+        print("write into list")
         
     }
 
@@ -96,6 +97,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentDirectoryPath = paths[0] as String
+        
+        // Add the plist filename to the document directory path to obtain an absolute path to the plist filename
+        let plistFilePathInDocumentDirectory = documentDirectoryPath + "/levelRecord.plist"
+        
+        // Write the NSMutableDictionary to the CountryCities.plist file in the Document directory
+        levelRecordDictionary.write(toFile: plistFilePathInDocumentDirectory, atomically: true)
+        print("write into list")
     }
 
 
