@@ -233,7 +233,24 @@ class AchievementScene: SKScene {
         }
         if beginnerBadgePressed == false && competentBadgePressed == false && proficientBadgePressed == false && expertBadgePressed == true{
             alertNode.zPosition = 5
-            alertLabelNode.text = "Get Three Stars in \(levelLabel)!\n Obtain Expert Badge!\n Congratulations!"
+            var timeLimit = 20
+            if levelLabel == "level 1" || levelLabel == "level 5"{
+                timeLimit = 20
+            }
+            if levelLabel == "level 2"{
+                timeLimit = 5
+            }
+            if levelLabel == "level 3"{
+                timeLimit = 30
+            }
+            if levelLabel == "level 4"{
+                timeLimit = 10
+            }
+            if levelLabel == "level 6"{
+                timeLimit = 40
+            }
+            
+            alertLabelNode.text = "Finish \(levelLabel) within \(timeLimit) seconds!\n Obtain Expert Badge!\n Congratulations!"
             alertLabelNode.position = CGPoint(x: self.frame.size.width/12, y: -self.frame.size.height/8)
             alertNode.position = CGPoint(x: self.frame.size.width/12, y: -self.frame.size.height/8)
             alertLabelNode.zPosition = 6
@@ -262,15 +279,20 @@ class AchievementScene: SKScene {
     
     func badgeAlpha(level: String){
         resetBadgeAlpha()
-        let number = applicationDelegate.levelRecordDictionary[level] as! [Int]
-        if(number[0] == 1){
+        let data = applicationDelegate.levelRecordDictionary[level] as! NSDictionary
+        let gameData = data as! Dictionary<String, Int>
+        
+        if(gameData["beginnerBadge"] == 1){
             beginnerBadgeNode.alpha = 1
         }
-        if(number[0] == 2){
+        if(gameData["competentBadge"] == 1){
             competentBadgeNode.alpha = 1
         }
-        if(number[0] == 3){
+        if(gameData["proficientBadge"] == 1){
             proficientBadgeNode.alpha = 1
+        }
+        if(gameData["expertBadge"] == 1){
+            expertBadgeNode.alpha = 1
         }
     }
     

@@ -29,7 +29,7 @@ class GameOverScene: SKScene {
         
         self.addChild(backLevelButton)
         self.addChild(replayLevelButton)
-        
+        print(level)
         run(Sound.hit.action)
     }
     
@@ -59,21 +59,21 @@ class GameOverScene: SKScene {
                 adventureScene3?.scaleMode = .aspectFill
                 self.view?.presentScene(adventureScene3!)
             }
-//            if level == 4{
-//                let adventureScene4 = AdventureScene4(fileNamed: "AdventureScene4")
-//                adventureScene4?.scaleMode = .aspectFill
-//                self.view?.presentScene(adventureScene4!)
-//            }
-//            if level == 5{
-//                let adventureScene5 = AdventureScene5(fileNamed: "AdventureScene5")
-//                adventureScene5?.scaleMode = .aspectFill
-//                self.view?.presentScene(adventureScene5!)
-//            }
-//            if level == 6{
-//                let adventureScene6 = AdventureScene6(fileNamed: "AdventureScene6")
-//                adventureScene6?.scaleMode = .aspectFill
-//                self.view?.presentScene(adventureScene6!)
-//            }
+            if level == 4{
+                let adventureScene4 = AdventureScene4(fileNamed: "AdventureScene4")
+                adventureScene4?.scaleMode = .aspectFill
+                self.view?.presentScene(adventureScene4!)
+            }
+            if level == 5{
+                let adventureScene5 = AdventureScene5(fileNamed: "AdventureScene5")
+                adventureScene5?.scaleMode = .aspectFill
+                self.view?.presentScene(adventureScene5!)
+            }
+            if level == 6{
+                let adventureScene6 = AdventureScene6(fileNamed: "AdventureScene6")
+                adventureScene6?.scaleMode = .aspectFill
+                self.view?.presentScene(adventureScene6!)
+            }
         }
     }
 }

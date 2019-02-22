@@ -9,6 +9,7 @@
 import Foundation
 import SpriteKit
 
+// declare an enum Sound and define each case
 enum Sound : String{
     case hit, jump, meteorFalling, reward, applaud, levelUp
     var action : SKAction{
@@ -17,5 +18,6 @@ enum Sound : String{
 }
 
 extension SKAction{
+    // menu scene background music
     static let playGameMusic: SKAction = repeatForever(playSoundFileNamed("music.wav", waitForCompletion: false))
 }

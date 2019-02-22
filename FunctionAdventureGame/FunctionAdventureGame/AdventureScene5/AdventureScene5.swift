@@ -10,6 +10,7 @@ import UIKit
 import GameplayKit
 
 class AdventureScene5: SKScene, SKPhysicsContactDelegate {
+    //declare all the SKNodes and SKlabels
     var backButtonNode: SKNode?
     var pauseButtonNode: SKNode?
     var replayButtonNode: SKNode?
@@ -26,12 +27,17 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     var tutorialNode: SKNode?
     var tutorialTitleNode = SKLabelNode()
     var tutorialLabelNode = SKLabelNode()
+    var periodScaleLabel1 = SKLabelNode()
+    var periodScaleLabel2 = SKLabelNode()
     var resumeButtonNode: SKNode?
     var okButtonNode: SKNode?
     var cancelButtonNode: SKNode?
     var alertLabelNode = SKLabelNode()
     var alertNode = SKShapeNode()
+    var congratulationNode: SKSpriteNode!
+    var gotItButtonNode: SKNode?
     
+    //declare some flag variable
     var pause = false
     var sizeChosen = false
     var speedChosen = false
@@ -43,6 +49,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     var gameSuccess = true
     var goPressed = false
     var tutorialShow = false
+    var finishGame = false
     var backOrReplay = "back"
     var rotationSpeed: Double = Double(Double.pi/2)
     var moveSpeed = CGFloat(20)
@@ -58,10 +65,10 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     // lineshape for player draw
     var path = CGMutablePath()
     var lineshape = SKShapeNode()
-    // lineshape for connection between wheel and trigonometric graph
+    // lineshape1 for connection between wheel and trigonometric graph
     var path1 = CGMutablePath()
     var lineshape1 = SKShapeNode()
-    // lineshape for original graph
+    // lineshape2 for original graph
     var path2 = CGMutablePath()
     var lineshape2 = SKShapeNode()
     var currentLocation = CGPoint(x:0,y:0)
@@ -91,6 +98,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
     let applicationDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func didMove(to view: SKView) {
+        // add background and water wheel to the scene
         waterbg5Node = self.childNode(withName: "waterbg5")
         waterbg5Node?.zPosition = -1
         ferrisWheelNode = self.childNode(withName: "waterWheel")
@@ -98,11 +106,27 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         ferrisWheelNode?.zPosition = 1
         radius = Double(ferrisWheelNode!.frame.size.width*10/24)
         
+        // congratulationNode only shows when player successfully complete the challenge. Make it zposition -2 first and once player finishes the game, change zposition to 3 to show up on the top.
+        congratulationNode = SKSpriteNode(imageNamed: "congratulationSign3")
+        congratulationNode.position = CGPoint(x: 0, y: 0)
+        congratulationNode.size = CGSize(width: self.frame.size.width/1.5, height: self.frame.size.height/1.5)
+        congratulationNode.zPosition = -2
+        congratulationNode.alpha = 0
+        self.addChild(congratulationNode)
+        
+        gotItButtonNode = self.childNode(withName: "gotItButton")
+        gotItButtonNode!.position = CGPoint(x: 0, y: -congratulationNode!.frame.size.height/3)
+        gotItButtonNode!.setScale(2)
+        gotItButtonNode!.zPosition = -3
+        gotItButtonNode?.alpha = 0
+        
+        
         playerNodeAd6 = self.childNode(withName: "playerNode")
         playerNodeAd6!.position = CGPoint(x: -self.frame.size.width/4 + CGFloat(radius), y: 0)
         playerNodeAd6?.zPosition = 2
         playerNodeAd6?.setScale(0.2)
         
+        // this slider is to control the size of the water wheel
         slideButtonNode = self.childNode(withName: "sliderButton")
         slideButtonNode!.position = CGPoint(x: -self.frame.size.width/3, y: -self.frame.size.height * 3 / 8)
         slideButtonNode?.zPosition = 2
@@ -110,6 +134,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         slideBarNode!.position = CGPoint(x: -self.frame.size.width/3, y: -self.frame.size.height * 3 / 8)
         slideBarNode?.zPosition = 1
         
+        // this slider is to control the period of the trigonometric function graph
         speedSlideButtonNode = self.childNode(withName: "speedSliderButton")
         speedSlideButtonNode!.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height * 3 / 8)
         speedSlideButtonNode?.zPosition = 2
@@ -117,15 +142,39 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         speedSlideBarNode!.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height * 3 / 8)
         speedSlideBarNode?.zPosition = 1
         
+        // the min period label and the max period label
+        periodScaleLabel1.horizontalAlignmentMode = .center
+        periodScaleLabel1.verticalAlignmentMode = .center
+        periodScaleLabel1.position = CGPoint(x: self.frame.size.width/7 - speedSlideBarNode!.frame.size.width/2, y: -self.frame.size.height/3 - 5)
+        periodScaleLabel1.fontName = "Arial"
+        periodScaleLabel1.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+        periodScaleLabel1.fontSize = 20
+        periodScaleLabel1.text = "1π"
+        periodScaleLabel1.zPosition = 3
+        self.addChild(periodScaleLabel1)
+        
+        periodScaleLabel2.horizontalAlignmentMode = .center
+        periodScaleLabel2.verticalAlignmentMode = .center
+        periodScaleLabel2.position = CGPoint(x: self.frame.size.width/7 + speedSlideBarNode!.frame.size.width/2, y: -self.frame.size.height/3 - 5)
+        periodScaleLabel2.fontName = "Arial"
+        periodScaleLabel2.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+        periodScaleLabel2.fontSize = 20
+        periodScaleLabel2.text = "2π"
+        periodScaleLabel2.zPosition = 3
+        self.addChild(periodScaleLabel2)
+        
+        // this node is the starting position of the function graph (only 4 choices)
         arrowDirectionNode = self.childNode(withName: "arrowDirection")
         arrowDirectionNode!.position = CGPoint(x: -self.frame.size.width/11, y: -self.frame.size.height * 3 / 8)
         arrowDirectionNode?.zPosition = 2
         
+        // after choosing the 3 condition, go button is to check the answer
         goButtonNode = self.childNode(withName: "goButton")
         goButtonNode?.setScale(0.8)
         goButtonNode!.position = CGPoint(x: self.frame.size.width/2.7, y: -self.frame.size.height * 3 / 8)
         goButtonNode!.zPosition = 2
         
+        // add back, replay, pause/resume question button
         backButtonNode = self.childNode(withName: "backButton")
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
         backButtonNode?.zPosition = 2
@@ -141,25 +190,23 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         replayButtonNode?.position = CGPoint(x: self.frame.size.width/3 - (replayButtonNode?.frame.size.width)!/2, y: self.frame.size.height/2 - (replayButtonNode?.frame.size.height)!/2 - self.frame.size.width/30)
         replayButtonNode?.zPosition = 2
         
+        // add line shapes to the scene and set its starting position
         currentLocation = CGPoint(x: -self.frame.size.width/4 + CGFloat(radius),y:0)
         path.move(to: CGPoint(x: currentLocation.x, y: currentLocation.y))
-//        print(currentLocation.x)
-        lineshape.zPosition = 4
+        lineshape.zPosition = 3
         lineshape.strokeColor = UIColor.black
         self.addChild(lineshape)
         
-//        currentLocation1 = CGPoint(x:0 + CGFloat(radius),y:0)
-//        path1.move(to: CGPoint(x: currentLocation.x, y: currentLocation.y))
-        lineshape1.zPosition = 4
+        lineshape1.zPosition = 1
         lineshape1.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
         self.addChild(lineshape1)
         
         path2.move(to: CGPoint(x: 0, y: 0))
-        lineshape2.zPosition = 3
+        lineshape2.zPosition = 2
         lineshape2.strokeColor = UIColor.white
         self.addChild(lineshape2)
         
-        
+        // y = A sin(𝑤x + 𝝋) randomly create the function parameter A (size of the water wheel), parameter 𝑤(period) and parameter 𝝋 (the starting position)
         let radiusR = Double.random(in: radius * 0.4 ... radius * 1.2)
         let tempX = Int.random(in: 10 ... 20)
         let sinFunction = Int.random(in: 1 ... 4)
@@ -171,20 +218,23 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         currentLocation1 = CGPoint(x:0,y: radiusR * sin(initialAngle))
         path2.move(to: CGPoint(x: 0, y: radiusR * sin(initialAngle)))
         for i in 1 ... 5{
+            // drawing the 5 dots
             let circle = SKShapeNode(circleOfRadius: 3) // Size of Circle
             circle.position = CGPoint(x: 0 + CGFloat(i-1) * self.frame.size.width/CGFloat(tempX), y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + initialAngle))) //Middle of Screen
             circle.strokeColor = UIColor.black
             circle.fillColor = UIColor.black
             circle.glowWidth = 1.0
             circle.name = "circle\(i)"
+            circle.zPosition = 1
             self.addChild(circle)
             currentLocation1 = CGPoint(x:0 + CGFloat(i-1) * self.frame.size.width/CGFloat(tempX),y: 0)
+            // drawing the trigonometric graph
             if i != 5 {
                 for j in 1 ... 20{
                     path2.addLine(to: CGPoint(x: currentLocation1.x + CGFloat(j-1) * self.frame.size.width/CGFloat(tempX)/20, y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + initialAngle + (Double)(j-1) * Double.pi/2/20))))
                     path2.move(to: CGPoint(x: currentLocation1.x + CGFloat(j-1) * self.frame.size.width/CGFloat(tempX)/20, y: (CGFloat)(0 + radiusR * sin((Double)(i-1) * Double.pi/2 + initialAngle + (Double)(j-1) * Double.pi/2/20))))
                     lineshape2.path = path2
-                    lineshape2.zPosition = 3
+                    lineshape2.zPosition = 2
                     lineshape2.strokeColor = UIColor.white
                     lineshape2.lineWidth = 3
                 }
@@ -200,7 +250,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         timeCounterLabel.fontSize = 32
         timeCounterLabel.fontName = "AvenirNext-Bold"
         timeCounterLabel.position = CGPoint(x: 0, y: self.frame.size.height/2 - self.frame.size.width/16)
-        timeCounterLabel.text = "Time: 00:00.00"
+        timeCounterLabel.text = "Time: 00:00:00"
         self.addChild(timeCounterLabel)
         
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
@@ -214,6 +264,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         titleLabel.text = "Try to make the trigonometric graph as below"
         self.addChild(titleLabel)
         
+        // set labels for explanation for slider nodes and arrow node
         sizeLabel.zPosition = 2
         sizeLabel.fontColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         sizeLabel.fontSize = 20
@@ -221,7 +272,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         sizeLabel.preferredMaxLayoutWidth = self.frame.size.width/5
         sizeLabel.fontName = "Arial"
         sizeLabel.position = CGPoint(x: -self.frame.size.width/3, y: -self.frame.size.height/3)
-        sizeLabel.text = "Change the size of the water wheel"
+        sizeLabel.text = "Set water wheel size"
         self.addChild(sizeLabel)
         
         speedLabel.zPosition = 2
@@ -231,7 +282,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         speedLabel.preferredMaxLayoutWidth = self.frame.size.width/5
         speedLabel.fontName = "Arial"
         speedLabel.position = CGPoint(x: self.frame.size.width/7, y: -self.frame.size.height/3)
-        speedLabel.text = "change the width of the graph (𝑤 in trigonometric formula)"
+        speedLabel.text = "set period"
         self.addChild(speedLabel)
         
         moveSpeed = 1/1200 * self.frame.size.width + 0.5 * 1/1200 * self.frame.size.width
@@ -243,7 +294,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         directionLabel.preferredMaxLayoutWidth = self.frame.size.width/5
         directionLabel.fontName = "Arial"
         directionLabel.position = CGPoint(x: -self.frame.size.width/11, y: -self.frame.size.height/3)
-        directionLabel.text = "Click to change start angle"
+        directionLabel.text = "Set starting position"
         self.addChild(directionLabel)
         
         formulaLabel.zPosition = 2
@@ -258,6 +309,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         questionButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11)
         questionButtonNode?.zPosition = 2
         
+        // when player clicks the question node, an popup window comes out. Some instructions will list on there
         tutorialNode = self.childNode(withName: "tutorialbg")
         tutorialNode!.zPosition = -5
         tutorialNode!.alpha = 0
@@ -265,7 +317,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         
         tutorialTitleNode.horizontalAlignmentMode = .center
         tutorialTitleNode.verticalAlignmentMode = .center
-        tutorialTitleNode.position = CGPoint(x: 0, y: self.frame.size.height/8-10)
+        tutorialTitleNode.position = CGPoint(x: 0, y: self.frame.size.height/6+4)
         tutorialTitleNode.fontName = "Arial"
         tutorialTitleNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
         tutorialTitleNode.fontSize = 26
@@ -280,7 +332,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         tutorialLabelNode.fontName = "Arial"
         tutorialLabelNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
         tutorialLabelNode.fontSize = 20
-        tutorialLabelNode.text = "   Choose the moving direction and speed by clicking two buttons. Your goal is to jump across the river and reach the the other side of the mountain! Drop into water and jump too far away will lose a heart. You could try three times for this game."
+        tutorialLabelNode.text = "Your challenge is to reproduce the graph showing on the right screen. \nRed button controls the Amplitude of the graph, arrow button decides where the graph begins (phase shift), and the green button change the period of the graph. After changing the size of the water wheel, the start position and the periodic time of the graph, click go button to make the trigonometric graph."
         tutorialLabelNode.numberOfLines = 5
         tutorialLabelNode.preferredMaxLayoutWidth = self.frame.size.width/3
         tutorialLabelNode.zPosition = -6
@@ -306,7 +358,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
         alertLabelNode.zPosition = -6
         self.addChild(alertLabelNode)
-        
+        // alertNode pop up window has two buttons, ok button and cancel buttton
         okButtonNode = self.childNode(withName: "okButton")
         okButtonNode!.position = CGPoint(x: self.frame.size.width/16, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4)
         okButtonNode?.zPosition = -6
@@ -324,7 +376,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         yCoordinate.path = arrowY.cgPath
         yCoordinate.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
         yCoordinate.lineWidth = 3
-        yCoordinate.zPosition = 4
+        yCoordinate.zPosition = 1
         self.addChild(yCoordinate)
         //X axis
         let arrowX = UIBezierPath()
@@ -332,7 +384,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         xCoordinate.path = arrowX.cgPath
         xCoordinate.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
         xCoordinate.lineWidth = 3
-        xCoordinate.zPosition = 4
+        xCoordinate.zPosition = 1
         self.addChild(xCoordinate)
         
         // draw scale on trigonometric graph
@@ -364,7 +416,7 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         
         // Calculate total time since timer started in seconds
         //        var currentTime = Date().timeIntervalSinceReferenceDate - startTime
-        if pause == false{
+        if pause == false && finishGame == false{
             timerCount += 1
             // Calculate minutes
             let timeString = String(format: "%02d:%02d:%02d", timerCount/3600, (timerCount/60)%60, timerCount%60)
@@ -416,10 +468,14 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
         path1 = CGMutablePath()
         
         if pause == true {return}
-        //240 ticks to finish 2pi
+        
+        //SpriteKit tries to run(update) the game at 60 frames per 1 second. So each frame is about 0.01667 seconds
+        // For drawing the graph, according to rotation speed, it takes 240 frames to finish 2pi
+        
+        // once user press the go button, it begins to draw the trigonometric graph
         if goPressed == true{
             
-//            if rotationAngle >= 2 * Double.pi + rotationSpeed * deltaTime{
+            // when frames greater than 240 which means that it finishes drawing the trigonometric graph, check 5 dots with the target function. If within 20, success, otherwise, lose heart
             if tickCount > 240{
                 ferrisWheelNode?.alpha = 0
                 playerNodeAd6!.alpha = 0
@@ -428,17 +484,18 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
                     let positionX2 = (self.childNode(withName: "node\(i)") as! SKShapeNode).position.x
                     let positionY1 = (self.childNode(withName: "circle\(i)") as! SKShapeNode).position.y
                     let positionY2 = (self.childNode(withName: "node\(i)") as! SKShapeNode).position.y
-//                    print(positionX1 - positionX2)
-//                    print(positionY1 - positionY2)
-                    if abs(Double(positionX1 - positionX2)) > 15 || abs(Double(positionY1 - positionY2)) > 15 {
+                    // calculate the abs distance of 5 dots that user draws between the 5 dots of target function
+                    if abs(Double(positionX1 - positionX2)) > 20 || abs(Double(positionY1 - positionY2)) > 20 {
                         gameSuccess = false
                     }
                 }
                 
                 if gameSuccess == true {
+                    // successfully finishes the game
                     path1 = CGMutablePath()
                     lineshape1.path = path1
                     if timeToRemain == 0{
+                        // play appauld music and flashes the graph
                         run(Sound.applaud.action)
                         (self.childNode(withName: "circle\(1)") as! SKShapeNode).run(SKAction.repeat(.sequence([
                             .fadeAlpha(to: 0.2, duration: 0.05),
@@ -515,27 +572,80 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
                             ]), count: 8))
                         
                     }
+                    // after flashing, showing the congratulation pop up window
                     timeToRemain = timeToRemain + 1
-                    if timeToRemain > 200 {
-                        var number = applicationDelegate.levelRecordDictionary["level5"] as! [Int]
-                        //                        print(number[1])
-                        if self.heartsArray.count > number[0] {
-                            number[0] = self.heartsArray.count
-                        }
-                        if self.timerCount < number[1] {
-                            number[1] = self.timerCount
-                        }
-                        applicationDelegate.levelRecordDictionary.setValue(number, forKey: "level5")
+                    if timeToRemain == 200 {
+                        let data = applicationDelegate.levelRecordDictionary["level5"] as! NSDictionary
+                        var gameData = data as! Dictionary<String, Int>
                         
-                        let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
-                        gameSuccessScene?.scaleMode = .aspectFill
-                        gameSuccessScene!.performanceLevel = self.heartsArray.count
-                        gameSuccessScene!.level = 5
-                        self.view?.presentScene(gameSuccessScene!)
+                        // update highest star for level 5
+                        if self.heartsArray.count > gameData["highestStar"]! {
+                            gameData["highestStar"] = self.heartsArray.count
+                        }
+                        // update time counter for level 5
+                        if self.timerCount < gameData["timeCount"]! {
+                            gameData["timeCount"] = self.timerCount
+                        }
+                        // update badge, set 1 for obtain the badge
+                        if self.heartsArray.count == 1 {
+                            gameData["beginnerBadge"] = 1
+                            let beginnerBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "beginnerBadge"))
+                            beginnerBadgeNode.setScale(0.8)
+                            beginnerBadgeNode.position = CGPoint(x: -congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                            beginnerBadgeNode.name = "badge1"
+                            beginnerBadgeNode.zPosition = 4
+                            addChild(beginnerBadgeNode)
+                        }
+                        if self.heartsArray.count == 2 {
+                            gameData["competentBadge"] = 1
+                            let competentBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "competentBadge"))
+                            competentBadgeNode.setScale(0.8)
+                            competentBadgeNode.position = CGPoint(x: -congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                            competentBadgeNode.name = "badge1"
+                            competentBadgeNode.zPosition = 4
+                            addChild(competentBadgeNode)
+                        }
+                        if self.heartsArray.count == 3 {
+                            gameData["proficientBadge"] = 1
+                            let proficientBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "proficientBadge"))
+                            proficientBadgeNode.setScale(0.8)
+                            proficientBadgeNode.position = CGPoint(x: -congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                            proficientBadgeNode.name = "badge1"
+                            proficientBadgeNode.zPosition = 4
+                            addChild(proficientBadgeNode)
+                        }
+                        // if finish game within 20 sec, get expert badge
+                        if self.timerCount <= 20 {
+                            gameData["expertBadge"] = 1
+                            let expertBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "expertBadge"))
+                            expertBadgeNode.setScale(0.8)
+                            expertBadgeNode.position = CGPoint(x: congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                            expertBadgeNode.name = "badge2"
+                            expertBadgeNode.zPosition = 4
+                            addChild(expertBadgeNode)
+                        }
+                        
+                        applicationDelegate.levelRecordDictionary.setValue(gameData, forKey: "level5")
+                        
+                        finishGame = true
+                        congratulationNode.texture = SKTexture(imageNamed: "congratulationSign\(self.heartsArray.count)")
+                        congratulationNode?.zPosition = 3
+                        congratulationNode?.alpha = 1
+                        gotItButtonNode?.zPosition = 4
+                        gotItButtonNode?.alpha = 1
                     }
                 }
                 else{
                     loseHeart()
+                    for i in 0 ..< heartsArray.count{
+                        let heartNode = self.heartsArray[i]
+                        heartNode.run(SKAction.repeat(.sequence([
+                            .fadeAlpha(to: 0.2, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            .fadeAlpha(to: 1.0, duration: 0.05),
+                            .wait(forDuration: 0.1),
+                            ]), count: 3))
+                    }
                     ferrisWheelNode!.position = CGPoint(x: -self.frame.size.width/4, y: 0)
                     ferrisWheelNode?.setScale(1)
                     ferrisWheelNode?.alpha = 1
@@ -570,32 +680,36 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
                 }
                 return
             }
-            
+            //drawing the 5 dots of the trigonometric graph, name it node1, node2...node5
             if tickCount % 60 == 0 {
                 nodeNumber = nodeNumber + 1
-                print(tickCount)
-                print(nodeNumber)
+//                print(tickCount)
+//                print(nodeNumber)
                 let circle = SKShapeNode(circleOfRadius: 3) // Size of Circle
-                circle.position = CGPoint(x: currentLocation.x, y: CGFloat(radius * sin(rotationAngle))) //Middle of Screen
+                circle.position = CGPoint(x: currentLocation.x, y: CGFloat(radius * sin(rotationAngle)))
                 circle.strokeColor = UIColor.red
                 circle.fillColor = UIColor.red
                 circle.glowWidth = 1.0
                 circle.name = "node\(nodeNumber)"
+                circle.zPosition = 2
                 self.addChild(circle)
             }
+            
+            // make water wheel rotate with rotation speed pi/2
             let rotation = SKAction.rotate(byAngle: (CGFloat)(rotationSpeed * deltaTime), duration: 0)
             ferrisWheelNode?.run(rotation)
             rotationAngle = rotationAngle + rotationSpeed * deltaTime
-            
-//            print(sin(rotationAngle))
+           
+            // this is the x displacement for drawing the trigonometric graph
             let displacement = CGVector(dx: moveSpeed, dy: 0)
-//            let move = SKAction.move(by: displacement, duration: 0)
-//            ferrisWheelNode!.run(move)
-            
+
 //            let movement = SKAction.move(to: CGPoint(x: currentLocation.x + displacement.dx + CGFloat(radius * (cos(rotationAngle) - 1)), y: CGFloat(radius * sin(rotationAngle))), duration: 0)
+            
+            // playerNode rotate along with water wheel
             let movement = SKAction.move(to: CGPoint(x: ferrisWheelNode!.position.x + CGFloat(radius * cos(rotationAngle)), y: CGFloat(radius * sin(rotationAngle))), duration: 0)
             playerNodeAd6?.run(movement)
             
+            // adding the line frame by frame
             path.addLine(to: CGPoint(x: currentLocation.x + displacement.dx, y: CGFloat(radius * sin(rotationAngle))))
             path.move(to: CGPoint(x: currentLocation.x + displacement.dx, y: CGFloat(radius * sin(rotationAngle))))
             currentLocation = CGPoint(x:currentLocation.x + displacement.dx, y:currentLocation.y + displacement.dy)
@@ -603,16 +717,15 @@ class AdventureScene5: SKScene, SKPhysicsContactDelegate {
             lineshape.path = path
             lineshape.strokeColor = UIColor.black
             lineshape.lineWidth = 3
-            lineshape.zPosition = 4
+            lineshape.zPosition = 3
             
             path1.move(to: CGPoint(x: currentLocation.x, y: CGFloat(radius * sin(rotationAngle))))
 //            path1.addLine(to: CGPoint(x: currentLocation.x + CGFloat(radius * (cos(rotationAngle) - 1)), y: CGFloat(radius * sin(rotationAngle))))
             path1.addLine(to: CGPoint(x: ferrisWheelNode!.position.x + CGFloat(radius * cos(rotationAngle)), y: CGFloat(radius * sin(rotationAngle))))
             lineshape1.path = path1
-            lineshape1.zPosition = 4
             lineshape1.strokeColor = UIColor(red:0.99, green:0.55, blue:0.46, alpha:0.6)
             lineshape1.lineWidth = 3
-            lineshape1.zPosition = 4
+            lineshape1.zPosition = 1
             
             tickCount = tickCount + 1
         }
@@ -633,6 +746,7 @@ extension AdventureScene5{
             }
         }
         
+        // touch the arrow node to change its direction counterclockwise by 90 degree, also change the starting position for playerNode
         let touch = touches.first
         if let location = touch?.location(in: self){
             let nodesArray = self.nodes(at: location)
@@ -645,11 +759,14 @@ extension AdventureScene5{
                 playerNodeAd6?.run(movement)
                 rotationAngle = tempAngle
             }
+            // click go button to set goPressed flag to true and start drawing lines in update function
             if nodesArray.first?.name == "goButton"{
                 currentLocation = CGPoint(x: 0, y:CGFloat(radius * sin(tempAngle)))
                 path.move(to: CGPoint(x: 0, y:CGFloat(radius * sin(tempAngle))))
                 goPressed = true
             }
+            
+            // buttons that helps user to pause, replay, go back
             if nodesArray.first?.name == "okButton"{
                 if backOrReplay == "back"{
                     pause = false
@@ -696,7 +813,6 @@ extension AdventureScene5{
             if nodesArray.first?.name == "backButton"{
                 if pause == false {
                     pause = true
-                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
                     backOrReplay = "back"
                     alertNode.zPosition = 5
                     alertNode.alpha = 1
@@ -728,8 +844,6 @@ extension AdventureScene5{
                 //pause all variables about time.
                 if pause == true{
                     pause = false
-                    //                    timer.invalidate()
-                    //                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
                     pauseButtonNode?.zPosition = 2
                     resumeButtonNode?.zPosition = -2
                     resumeButtonNode?.removeAllActions()
@@ -741,8 +855,6 @@ extension AdventureScene5{
                 if pause == false {
                     pause = true
                     backOrReplay = "replay"
-                    
-                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
                     alertNode.zPosition = 5
                     alertNode.alpha = 1
                     alertLabelNode.text = "Do you want to replay this game?"
@@ -755,7 +867,7 @@ extension AdventureScene5{
                 }
             }
             if nodesArray.first?.name == "questionButton"{
-                
+                if finishGame == true {return}
                 if tutorialShow == false {
                     //show tutorial
                     if pause == true {return}
@@ -783,12 +895,23 @@ extension AdventureScene5{
                     }
                 }
             }
+            
+            if nodesArray.first?.name == "gotItButton"{
+                congratulationNode?.alpha = 0
+                gotItButtonNode?.alpha = 0
+                congratulationNode?.zPosition = -2
+                gotItButtonNode?.zPosition = -3
+                (self.childNode(withName: "badge1") as! SKSpriteNode).removeFromParent()
+                if self.timerCount <= 20{
+                    (self.childNode(withName: "badge2") as! SKSpriteNode).removeFromParent()
+                }
+            }
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if sizeSlideAction == false && speedSlideAction == false { return }
-        
+        // if user is moving the size slider, change the scale of the water wheel
         if sizeSlideAction {
             for touch in touches{
                 let position = touch.location(in: self)
@@ -809,7 +932,7 @@ extension AdventureScene5{
             }
         }
             
-        
+        // if user is moving the period slider, change the moving speed of the water wheel
         if speedSlideAction {
             for touch in touches{
                 let position = touch.location(in: self)
@@ -828,6 +951,7 @@ extension AdventureScene5{
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // when touches end, set sizeSlideAction and speedSlideAction to false
         for touch in touches{
             if sizeSlideAction {
                 sizeSlideAction = false
@@ -837,72 +961,6 @@ extension AdventureScene5{
                 speedSlideAction = false
             }
         }
-    }
-}
-
-
-
-// Alert Action
-extension AdventureScene5{
-    func showAlertPlaying(withTitle title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .cancel) { _ in
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
-    }
-    
-    func showAlertResume(withTitle title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "Resume", style: .cancel) { _ in
-            self.pause = false
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
-    }
-    
-    func showAlertBack(withTitle title: String, message: String) {
-        
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            self.pause = false
-        }
-        alertController.addAction(cancelAction)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
-            
-            let gameLevelScene = GameLevelScene(fileNamed: "GameLevelScene")
-            gameLevelScene?.scaleMode = .aspectFill
-            self.view?.presentScene(gameLevelScene!)
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
-    }
-    
-    func showAlertReplay(withTitle title: String, message: String){
-        
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            self.pause = false
-        }
-        alertController.addAction(cancelAction)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
-            
-            let adventureScene5 = AdventureScene5(fileNamed: "AdventureScene5")
-            adventureScene5?.scaleMode = .aspectFill
-            self.view?.presentScene(adventureScene5!)
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
     }
 }
 

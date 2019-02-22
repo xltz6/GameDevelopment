@@ -10,6 +10,7 @@ import UIKit
 import GameplayKit
 
 class AdventureScene2: SKScene, SKPhysicsContactDelegate{
+    // declare SKNodes and SKLabel
     var mountainLeftNode: SKNode?
     var mountainRightNode: SKNode?
     var backgroundAdventure2: SKNode?
@@ -34,19 +35,25 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     var cancelButtonNode: SKNode?
     var alertLabelNode = SKLabelNode()
     var alertNode = SKShapeNode()
+    var congratulationNode: SKSpriteNode!
+    var gotItButtonNode: SKNode?
     
-//    var cameraNode: SKCameraNode?
+    // time counter variables
     var timeCounterLabel: SKLabelNode!
     var timerCount = 0
     var startTime: Double = 0
     var timer = Timer()
     
+    // force flag is to give character a force according to the direction and the speed player chooses
     var force = false
     var pause = false
     var isPlaying = false
+    var isDrawing = true
+    // flag to check if user selects the direction and the speed
     var directionChosen = false
     var speedChosen = false
     var tutorialShow = false
+    var finishGame = false
     var backOrReplay = "back"
     var previousTimeInterval: TimeInterval = 0
     var previousCharacterNodeX: CGFloat = 0
@@ -57,7 +64,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     //Hearts
     var heartsArray: [SKSpriteNode]!
     
-    // Chart
+    // line shape for drawing quadratic function
     var path = CGMutablePath()
     let shape = SKShapeNode()
     let xCoordinate = SKShapeNode()
@@ -66,6 +73,9 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     var currentLocation = CGPoint(x:0,y:0)
     var circleX = SKShapeNode()
     var circleY = SKShapeNode()
+    //draw success landing area
+    var path1 = CGMutablePath()
+    let lineshape1 = SKShapeNode()
     
     // Obtain the object reference of the App Delegate object
     let applicationDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -75,23 +85,22 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     let endZoneCategory: UInt32 = 0x1 << 8
     
     override func didMove(to view: SKView) {
-//        self.physicsWorld.contactDelegate = self
-//        cameraNode = childNode(withName: "cameraNode") as? SKCameraNode
-        
+        //ground background
         backgroundAdventure2 = childNode(withName: "bgadventure2")
-        backgroundAdventure2?.zPosition = 2
+        backgroundAdventure2?.zPosition = 1
+        //sky background
         backgroundAdventure2Node = childNode(withName: "bgAd2")
-        backgroundAdventure2Node?.zPosition = -1
+        backgroundAdventure2Node?.zPosition = -2
         
         characterNode = childNode(withName: "character")
         characterNode?.setScale(0.2)
-        characterNode?.zPosition = 1
+        characterNode?.zPosition = 0
         characterNode?.position = CGPoint(x: 120 + characterNode!.frame.size.width/2 - self.frame.size.width/2, y: 100)
-        characterNode?.physicsBody = SKPhysicsBody(rectangleOf: characterNode!.frame.size)
         
+        //set physic body of player (categoryBitMask 2)
+        characterNode?.physicsBody = SKPhysicsBody(rectangleOf: characterNode!.frame.size)
         characterNode?.physicsBody?.isDynamic = true
         characterNode?.physicsBody!.affectedByGravity = true
-
         characterNode?.physicsBody?.categoryBitMask = characterCategory
         characterNode?.physicsBody?.contactTestBitMask = endZoneCategory
         characterNode?.physicsBody?.collisionBitMask = mountainCategory
@@ -104,18 +113,19 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         
         mountainLeftNode = childNode(withName: "mountainLeft")
         mountainLeftNode?.setScale(0.6)
-        mountainLeftNode?.zPosition = 1
+        mountainLeftNode?.zPosition = 0
         mountainRightNode = childNode(withName: "mountainRight")
         mountainRightNode?.setScale(0.6)
-        mountainRightNode?.zPosition = 1
+        mountainRightNode?.zPosition = 0
         
+        //set physics body of ground background (categoryBitMask 4)
         backgroundAdventure2?.physicsBody = SKPhysicsBody(rectangleOf: backgroundAdventure2!.frame.size)
-        
         backgroundAdventure2?.physicsBody?.categoryBitMask = mountainCategory
         backgroundAdventure2?.physicsBody?.contactTestBitMask = characterCategory
         backgroundAdventure2?.physicsBody?.collisionBitMask = characterCategory
         backgroundAdventure2?.physicsBody?.isDynamic = false
         
+        //set physics body of left and right mountain (categoryBitMask 4)
         mountainLeftNode?.physicsBody = SKPhysicsBody(rectangleOf: mountainLeftNode!.frame.size)
         mountainLeftNode?.physicsBody?.isDynamic = false
         mountainLeftNode?.physicsBody?.categoryBitMask = mountainCategory
@@ -127,18 +137,30 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         mountainRightNode?.physicsBody?.contactTestBitMask = characterCategory
         mountainRightNode?.physicsBody?.collisionBitMask = characterCategory
 
-        angle = CGFloat(Double.random(in: 3.14/18..<3.14/4))
+        //randomly initialize mountain slope angle
+        angle = CGFloat(Double.random(in: 3.14/18..<3.14/5))
         mountainLeftNode?.zRotation = angle
         mountainRightNode?.zRotation = -angle
 
-        
+        //set right side edge of the screen as end zone and create physics body with categoryBitMask 8
         endZoneNode = self.childNode(withName: "endzone")
         endZoneNode?.physicsBody = SKPhysicsBody(rectangleOf: endZoneNode!.frame.size)
-        
         endZoneNode?.physicsBody?.categoryBitMask = endZoneCategory
         endZoneNode?.physicsBody?.contactTestBitMask = characterCategory
         endZoneNode?.physicsBody?.collisionBitMask = characterCategory
         endZoneNode?.physicsBody?.isDynamic = false
+        
+        congratulationNode = SKSpriteNode(imageNamed: "congratulationSign3")
+        congratulationNode.position = CGPoint(x: 0, y: 0)
+        congratulationNode.size = CGSize(width: self.frame.size.width/1.5, height: self.frame.size.height/1.5)
+        congratulationNode.zPosition = -5
+        self.addChild(congratulationNode)
+        
+        gotItButtonNode = self.childNode(withName: "gotItButton")
+        gotItButtonNode!.position = CGPoint(x: 0, y: -congratulationNode!.frame.size.height/3)
+        gotItButtonNode!.setScale(2)
+        gotItButtonNode!.zPosition = -3
+        
         
         backButtonNode = self.childNode(withName: "backButton")
         backButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (backButtonNode?.frame.size.height)!/2 - self.frame.size.width/25)
@@ -159,6 +181,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         questionButtonNode?.position = CGPoint(x: self.frame.size.width/25 - self.frame.size.width/2, y: self.frame.size.height/2 - (questionButtonNode?.frame.size.height)!/2 - self.frame.size.width/11)
         questionButtonNode?.zPosition = 2
         
+        // when player clicks the question node, an popup window comes out. Some instructions will list on there
         tutorialNode = self.childNode(withName: "tutorialbg")
         tutorialNode!.zPosition = -5
         tutorialNode!.alpha = 0
@@ -181,7 +204,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         tutorialLabelNode.fontName = "Arial"
         tutorialLabelNode.fontColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:0.6)
         tutorialLabelNode.fontSize = 20
-        tutorialLabelNode.text = "   Choose the moving direction and speed by clicking two buttons. Your goal is to jump across the river and reach the the other side of the mountain! Drop into water and jump too far away will lose a heart. You could try three times for this game."
+        tutorialLabelNode.text = "Your challenge is to control the player to jump across the river and land within the safe area in red line. \nChoose the moving direction and speed by clicking two buttons. Drop into water and jump too far away will lose a heart."
         tutorialLabelNode.numberOfLines = 5
         tutorialLabelNode.preferredMaxLayoutWidth = self.frame.size.width/3
         tutorialLabelNode.zPosition = -6
@@ -205,7 +228,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         alertLabelNode.preferredMaxLayoutWidth = self.frame.size.width/4.5
         alertLabelNode.zPosition = -6
         self.addChild(alertLabelNode)
-        
+        // alertNode pop up window has two buttons, ok button and cancel buttton
         okButtonNode = self.childNode(withName: "okButton")
         okButtonNode!.position = CGPoint(x: self.frame.size.width/16, y: self.frame.size.height/25 - okButtonNode!.frame.size.height*3/4)
         okButtonNode?.zPosition = -6
@@ -215,16 +238,16 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         cancelButtonNode?.zPosition = -6
         
         directionNode = self.childNode(withName: "direction")
-        directionNode?.zPosition = 3
+        directionNode?.zPosition = 2
         directionButtonNode = self.childNode(withName: "directionButtonAd2")
-        directionButtonNode?.zPosition = 3
+        directionButtonNode?.zPosition = 2
         
         speedNode = self.childNode(withName: "speed")
-        speedNode?.zPosition = 4
+        speedNode?.zPosition = 3
         speedBarNode = self.childNode(withName: "speedBar")
-        speedBarNode?.zPosition = 3
+        speedBarNode?.zPosition = 2
         speedButtonNode = self.childNode(withName: "speedButton")
-        speedButtonNode?.zPosition = 3
+        speedButtonNode?.zPosition = 2
         
         timeCounterLabel = self.childNode(withName: "timeCounter") as? SKLabelNode
         timeCounterLabel.zPosition = 2
@@ -236,12 +259,14 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         // create lives
         fillHearts(count: 3)
         
+        // add action for direction node
         let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
         let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
         let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
         let repeatAction1 = SKAction.repeatForever(sequence1)
         directionNode!.run(repeatAction1)
         
+        // add action for speed node
         let action3 = SKAction.scaleX(to: speedNode!.xScale * 5.6, duration: 1.5)
         let action4 = SKAction.scaleX(to: speedNode!.xScale, duration: 1.5)
         let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
@@ -256,21 +281,21 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         functionLabel.fontColor = SKColor.black
         functionLabel.fontSize = 20
         functionLabel.text = "Quadratic Function"
-        functionLabel.zPosition = 6
+        functionLabel.zPosition = 2
         self.addChild(functionLabel)
         
         shape.path = UIBezierPath(rect: CGRect(x: -self.frame.size.width/6, y: -self.frame.size.height/6, width: self.frame.size.width/3, height: self.frame.size.height/3)).cgPath
         shape.position = CGPoint(x: self.frame.size.width/2 - self.frame.size.width/6, y: -self.frame.size.height/2 + self.frame.size.height/5)
-        //        shape.fillColor = UIColor.red
         shape.alpha = 0.5
         shape.strokeColor = UIColor.black
         shape.lineWidth = 2
-        shape.zPosition = 5
+        shape.zPosition = 2
         self.addChild(shape)
         
+        // initial position of the function graph [0,0]
         path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
         currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
-        lineShape.zPosition = 5
+        lineShape.zPosition = 2
         self.addChild(lineShape)
         
         let arrowX = UIBezierPath()
@@ -278,7 +303,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         xCoordinate.path = arrowX.cgPath
         xCoordinate.strokeColor = UIColor.black
         xCoordinate.lineWidth = 2
-        xCoordinate.zPosition = 5
+        xCoordinate.zPosition = 2
         self.addChild(xCoordinate)
         
         let arrowY = UIBezierPath()
@@ -286,7 +311,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         yCoordinate.path = arrowY.cgPath
         yCoordinate.strokeColor = UIColor.black
         yCoordinate.lineWidth = 2
-        yCoordinate.zPosition = 5
+        yCoordinate.zPosition = 2
         self.addChild(yCoordinate)
 
         circleX = SKShapeNode(circleOfRadius: 2) // Size of Circle
@@ -294,7 +319,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         circleX.strokeColor = UIColor.red
         circleX.fillColor = UIColor.red
         circleX.glowWidth = 1.0
-        circleX.zPosition = 5
+        circleX.zPosition = 2
         self.addChild(circleX)
         
         circleY = SKShapeNode(circleOfRadius: 2) // Size of Circle
@@ -302,8 +327,19 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         circleY.strokeColor = UIColor.red
         circleY.fillColor = UIColor.red
         circleY.glowWidth = 1.0
-        circleY.zPosition = 5
+        circleY.zPosition = 2
         self.addChild(circleY)
+        
+        // using lineshape1 to represent safe area
+        let checkpoint = mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2 * sin(angle) - mountainRightNode!.frame.size.width/2 * cos(angle)
+        path1.move(to: CGPoint(x: checkpoint, y: 0))
+        self.addChild(lineshape1)
+        
+        path1.addLine(to: CGPoint(x: mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/8, y: 0))
+        lineshape1.path = path1
+        lineshape1.strokeColor = UIColor.red
+        lineshape1.lineWidth = 5
+        lineshape1.zPosition = 2
     }
     
     func fillHearts(count: Int){
@@ -331,6 +367,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
         if self.heartsArray.count == 0{
             dying()
         }
+        //every time lose heart, call invincible function to remove physic effect of character for 1 sec
         invincible()
     }
 
@@ -353,8 +390,7 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     @objc func updateTimer() {
         
         // Calculate total time since timer started in seconds
-        //        var currentTime = Date().timeIntervalSinceReferenceDate - startTime
-        if pause == false{
+        if pause == false && finishGame == false{
             timerCount += 1
             // Calculate minutes
             let timeString = String(format: "%02d:%02d:%02d", timerCount/3600, (timerCount/60)%60, timerCount%60)
@@ -363,12 +399,16 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
     }
     
     override func update(_ currentTime: TimeInterval) {
-        
+        // if player has chosen direction and speed, add gravity to character
         if directionChosen == true && speedChosen == true {
             self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
             isPlaying = true
+            isDrawing = true
         }
+        
         if pause == false && force == false && isPlaying == true {
+            // give character an impulse according to the chosen direction and speed
+            // once adding this impulse, set force to true, avoid to add impulse twice
             let scale = speedNode!.xScale
             print(scale)
             let direction = directionNode!.zRotation
@@ -376,9 +416,9 @@ class AdventureScene2: SKScene, SKPhysicsContactDelegate{
             let y = scale * 300 * sin(direction)
             characterNode?.physicsBody?.applyImpulse(CGVector(dx: x, dy: y))
             force = true
-//            cameraNode?.position.y = characterNode!.position.y
         }
-        if isPlaying == true{
+        // draw quadratic function
+        if isPlaying == true && isDrawing == true{
             path.addLine(to: CGPoint(x: currentLocation.x + (characterNode!.position.x - previousCharacterNodeX)/3, y: currentLocation.y + (characterNode!.position.y - previousCharacterNodeY)/3))
             path.move(to: CGPoint(x: currentLocation.x + (characterNode!.position.x - previousCharacterNodeX)/3, y: currentLocation.y + (characterNode!.position.y - previousCharacterNodeY)/3))
             
@@ -413,55 +453,145 @@ extension AdventureScene2{
             secondBody = contact.bodyA
             firstBody = contact.bodyB
         }
-        
+        // collision detection for player touches the mountain
         if (firstBody.categoryBitMask & characterCategory) != 0 && (secondBody.categoryBitMask & mountainCategory) != 0{
-            playerTouchMountain(characterNode: firstBody.node!, backgroundAdventure2: secondBody.node!)
+            if isDrawing == true{
+                playerTouchMountain(characterNode: firstBody.node!, backgroundAdventure2: secondBody.node!)
+            }
+            
         }
+        // collision detection for player touches the right edge of the screen
         if (firstBody.categoryBitMask & characterCategory) != 0 && (secondBody.categoryBitMask & endZoneCategory) != 0{
-            playerTouchEndZone(characterNode: firstBody.node!, endZoneNode: secondBody.node!)
+            if isDrawing == true{
+                playerTouchEndZone(characterNode: firstBody.node!, endZoneNode: secondBody.node!)
+            }
         }
     }
     
     func playerTouchMountain(characterNode: SKNode, backgroundAdventure2: SKNode) {
-//        let loss = SKAction.move(to: CGPoint(x: 80 - self.frame.size.width/2, y: 100 - self.frame.size.height/2), duration: 0.0)
-//        playerNboat!.run(loss)
-//        path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 - self.frame.size.height/2))
-//        currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 - self.frame.size.height/2)
-        
-        if isPlaying == true {
-            if characterNode.position.x < mountainRightNode!.position.x - mountainRightNode!.frame.size.height/2 || characterNode.position.x > mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/9 {
-                
-                loseHeart()
-                
+        if isPlaying == true && isDrawing == true{
+            // character lands within the safe area, success
+            if characterNode.position.x > mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2 * sin(angle) - mountainRightNode!.frame.size.width/2 * cos(angle) && characterNode.position.x <= mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/8 {
+                //reset direction, speed, isDrawing flag
                 directionChosen = false
                 speedChosen = false
-                force = false
-                isPlaying = false
+                finishGame = true
+                isDrawing = false
+                print("success")
+                // play applaud sound
+                run(Sound.applaud.action)
+                // the graph of quadratic functions flashes
+                lineShape.run(SKAction.repeat(.sequence([
+                    .fadeAlpha(to: 0.2, duration: 0.05),
+                    .wait(forDuration: 0.1),
+                    .fadeAlpha(to: 1.0, duration: 0.05),
+                    .wait(forDuration: 0.1),
+                    ]), count: 6))
                 
-                let loss = SKAction.move(to: CGPoint(x: 100 + characterNode.frame.size.width/2 - self.frame.size.width/2, y: 100), duration: 0.0)
-                let rotation = SKAction.rotate(toAngle: angle, duration: 0.0)
-                characterNode.run(SKAction.sequence([.wait(forDuration: 1.5), loss, rotation]))
+                let data = applicationDelegate.levelRecordDictionary["level2"] as! NSDictionary
+                var gameData = data as! Dictionary<String, Int>
+                
+                // update highest star for level 2
+                if self.heartsArray.count > gameData["highestStar"]! {
+                    gameData["highestStar"] = self.heartsArray.count
+                }
+                // update time counter for level 2
+                if self.timerCount < gameData["timeCount"]! {
+                    gameData["timeCount"] = self.timerCount
+                }
+                // update badge, set 1 for obtain the badge
+                // show the badge on congratulation pop up window if acchieves
+                if self.heartsArray.count == 1 {
+                    gameData["beginnerBadge"] = 1
+                    let beginnerBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "beginnerBadge"))
+                    beginnerBadgeNode.setScale(0.8)
+                    beginnerBadgeNode.position = CGPoint(x: -congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                    beginnerBadgeNode.name = "badge1"
+                    beginnerBadgeNode.zPosition = 5
+                    addChild(beginnerBadgeNode)
+                }
+                if self.heartsArray.count == 2 {
+                    gameData["competentBadge"] = 1
+                    let competentBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "competentBadge"))
+                    competentBadgeNode.setScale(0.8)
+                    competentBadgeNode.position = CGPoint(x: -congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                    competentBadgeNode.name = "badge1"
+                    competentBadgeNode.zPosition = 5
+                    addChild(competentBadgeNode)
+                }
+                if self.heartsArray.count == 3 {
+                    gameData["proficientBadge"] = 1
+                    let proficientBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "proficientBadge"))
+                    proficientBadgeNode.setScale(0.8)
+                    proficientBadgeNode.position = CGPoint(x: -congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                    proficientBadgeNode.name = "badge1"
+                    proficientBadgeNode.zPosition = 5
+                    addChild(proficientBadgeNode)
+                }
+                if self.timerCount <= 5 {
+                    gameData["expertBadge"] = 1
+                    let expertBadgeNode = SKSpriteNode(texture: SKTexture(imageNamed: "expertBadge"))
+                    expertBadgeNode.setScale(0.8)
+                    expertBadgeNode.position = CGPoint(x: congratulationNode!.frame.size.width/3, y: -congratulationNode!.frame.size.height/3)
+                    expertBadgeNode.name = "badge2"
+                    expertBadgeNode.zPosition = 5
+                    addChild(expertBadgeNode)
+                }
+                
+                applicationDelegate.levelRecordDictionary.setValue(gameData, forKey: "level2")
+                // show congratulation node and got it button
+                congratulationNode.texture = SKTexture(imageNamed: "congratulationSign\(self.heartsArray.count)")
+                congratulationNode?.zPosition = 4
+                gotItButtonNode?.zPosition = 5
+            }
             
-                self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
-                characterNode.physicsBody?.velocity =  CGVector()
-                characterNode.physicsBody?.angularVelocity = 0
-                characterNode.zRotation = angle
+            //when player lands out of the safe area, lose heart
+            if characterNode.position.x < mountainRightNode!.position.x - mountainRightNode!.frame.size.height/2 || characterNode.position.x > mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/8 {
                 
-                previousCharacterNodeX = 100 + characterNode.frame.size.width/2 - self.frame.size.width/2
-                previousCharacterNodeY = 100
-                path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
-                currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+                //reset direction, speed, isDrawing flag
+                directionChosen = false
+                speedChosen = false
+                isDrawing = false
                 
-                directionNode?.zRotation = 0
-                speedNode?.xScale = 0.323
-                
+                //lose heart and add flashing effect to remind player
+                loseHeart()
+                for i in 0 ..< heartsArray.count{
+                    let heartNode = self.heartsArray[i]
+                    heartNode.run(SKAction.repeat(.sequence([
+                        .fadeAlpha(to: 0.2, duration: 0.05),
+                        .wait(forDuration: 0.1),
+                        .fadeAlpha(to: 1.0, duration: 0.05),
+                        .wait(forDuration: 0.1),
+                        ]), count: 3))
+                }
+                // delay 1.5 sec to reset all variables to initial value
                 delay(1.5){
+                    self.force = false
+                    self.isPlaying = false
+
+                    let loss = SKAction.move(to: CGPoint(x: 100 + characterNode.frame.size.width/2 - self.frame.size.width/2, y: 100), duration: 0.0)
+                    let rotation = SKAction.rotate(toAngle: self.angle, duration: 0.0)
+                    self.characterNode!.run(SKAction.sequence([loss, rotation]))
+
+                    self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+                    self.characterNode!.physicsBody?.velocity =  CGVector()
+                    self.characterNode!.physicsBody?.angularVelocity = 0
+                    self.characterNode!.zRotation = self.angle
+
+                    self.previousCharacterNodeX = 100 + characterNode.frame.size.width/2 - self.frame.size.width/2
+                    self.previousCharacterNodeY = 100
+                    self.path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
+                    self.currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+
+                    self.directionNode?.zRotation = 0
+                    self.speedNode?.xScale = 0.323
+
                     let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
                     let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
                     let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
                     let repeatAction1 = SKAction.repeatForever(sequence1)
                     self.directionNode!.run(repeatAction1)
-                    
+
                     let action3 = SKAction.scaleX(to: self.speedNode!.xScale * 5.6, duration: 1.5)
                     let action4 = SKAction.scaleX(to: self.speedNode!.xScale, duration: 1.5)
                     let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
@@ -469,81 +599,67 @@ extension AdventureScene2{
                     self.speedNode!.run(repeatAction2)
                 }
             }
-            if characterNode.position.x > mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) && characterNode.position.x <= mountainRightNode!.position.x + mountainRightNode!.frame.size.height/2/sin(90-angle) + self.frame.size.width/9 {
-                run(Sound.applaud.action)
-                lineShape.run(SKAction.repeat(.sequence([
-                    .fadeAlpha(to: 0.2, duration: 0.05),
-                    .wait(forDuration: 0.1),
-                    .fadeAlpha(to: 1.0, duration: 0.05),
-                    .wait(forDuration: 0.1),
-                    ]), count: 6))
-                var number = applicationDelegate.levelRecordDictionary["level2"] as! [Int]
-                print(number[1])
-                if self.heartsArray.count > number[0] {
-                    number[0] = self.heartsArray.count
-                }
-                if self.timerCount < number[1] {
-                    number[1] = self.timerCount
-                }
-//                print(self.timerCount)
-//                print(number)
-                applicationDelegate.levelRecordDictionary.setValue(number, forKey: "level2")
-
-                delay(1.8){
-                    let gameSuccessScene = GameSuccessScene(fileNamed: "GameSuccessScene")
-                    gameSuccessScene?.scaleMode = .aspectFill
-                    gameSuccessScene!.performanceLevel = self.heartsArray.count
-                    gameSuccessScene!.level = 2
-                    self.view?.presentScene(gameSuccessScene!)
-                }
-            }
         }
     }
-    
-    
+
+    // when player touches the right side of the screen, lose heart
     func playerTouchEndZone(characterNode: SKNode, endZoneNode: SKNode){
-        
-        if characterNode.position.y > characterNode.frame.size.height/2{
-            
-            loseHeart()
-            
-            directionChosen = false
-            speedChosen = false
-            force = false
-            isPlaying = false
-            let loss = SKAction.move(to: CGPoint(x: 100 + characterNode.frame.size.width/2 - self.frame.size.width/2, y: 100), duration: 0.0)
-            let rotation = SKAction.rotate(toAngle: angle, duration: 0.0)
-            characterNode.run(SKAction.sequence([.wait(forDuration: 1.5), loss, rotation]))
-            
-
-            self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
-            characterNode.physicsBody?.velocity =  CGVector()
-            characterNode.physicsBody?.angularVelocity = 0
-            characterNode.zRotation = angle
-            
-            previousCharacterNodeX = 100 + characterNode.frame.size.width/2 - self.frame.size.width/2
-            previousCharacterNodeY = 100
-            path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
-            currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
-            
-            directionNode?.zRotation = 0
-            speedNode?.xScale = 0.323
-            delay(1.5){
-                let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
-                let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
-                let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
-                let repeatAction1 = SKAction.repeatForever(sequence1)
-                self.directionNode!.run(repeatAction1)
+        if isDrawing == true{
+            if characterNode.position.y > characterNode.frame.size.height/2{
                 
-                let action3 = SKAction.scaleX(to: self.speedNode!.xScale * 5.6, duration: 1.5)
-                let action4 = SKAction.scaleX(to: self.speedNode!.xScale, duration: 1.5)
-                let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
-                let repeatAction2 = SKAction.repeatForever(sequence2)
-                self.speedNode!.run(repeatAction2)
+                directionChosen = false
+                speedChosen = false
+                isDrawing = false
+                
+                loseHeart()
+                for i in 0 ..< heartsArray.count{
+                    let heartNode = self.heartsArray[i]
+                    heartNode.run(SKAction.repeat(.sequence([
+                        .fadeAlpha(to: 0.2, duration: 0.05),
+                        .wait(forDuration: 0.1),
+                        .fadeAlpha(to: 1.0, duration: 0.05),
+                        .wait(forDuration: 0.1),
+                        ]), count: 3))
+                }
+
+                delay(1.5){
+                    self.force = false
+                    self.isPlaying = false
+
+                    let loss = SKAction.move(to: CGPoint(x: 100 + characterNode.frame.size.width/2 - self.frame.size.width/2, y: 100), duration: 0.0)
+                    let rotation = SKAction.rotate(toAngle: self.angle, duration: 0.0)
+                    self.characterNode!.run(SKAction.sequence([loss, rotation]))
+
+                    self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+                    self.characterNode!.physicsBody?.velocity =  CGVector()
+                    self.characterNode!.physicsBody?.angularVelocity = 0
+                    self.characterNode!.zRotation = self.angle
+
+                    self.previousCharacterNodeX = 100 + characterNode.frame.size.width/2 - self.frame.size.width/2
+                    self.previousCharacterNodeY = 100
+                    self.path.move(to: CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2))
+                    self.currentLocation = CGPoint(x: self.frame.size.width/6 + 40, y: 20 + self.frame.size.height/30 - self.frame.size.height/2)
+
+                    self.directionNode?.zRotation = 0
+                    self.speedNode?.xScale = 0.323
+
+                    let action1 = SKAction.rotate(byAngle: CGFloat(Double.pi/2), duration:1.5)
+                    let action2 = SKAction.rotate(byAngle: CGFloat(-Double.pi/2), duration:1.5)
+                    let sequence1 = SKAction.sequence([.wait(forDuration: 0.1), action1, action2])
+                    let repeatAction1 = SKAction.repeatForever(sequence1)
+                    self.directionNode!.run(repeatAction1)
+
+                    let action3 = SKAction.scaleX(to: self.speedNode!.xScale * 5.6, duration: 1.5)
+                    let action4 = SKAction.scaleX(to: self.speedNode!.xScale, duration: 1.5)
+                    let sequence2 = SKAction.sequence([.wait(forDuration: 0.1), action3, action4])
+                    let repeatAction2 = SKAction.repeatForever(sequence2)
+                    self.speedNode!.run(repeatAction2)
+                }
             }
         }
     }
     
+    // delay function to execute after certain time
     func delay(_ delay:Double, closure:@escaping ()->()) {
         let when = DispatchTime.now() + delay
         DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
@@ -558,11 +674,13 @@ extension AdventureScene2{
             let nodesArray = self.nodes(at: location)
             
             if nodesArray.first?.name == "directionButtonAd2"{
+                // every time player choose the direction, stop the action on direction node and set direction flag to ture
                 directionNode!.removeAllActions()
                 directionChosen = true
             }
             
             if nodesArray.first?.name == "speedButton"{
+                // every time player choose the speed, stop the action on speed node and set speed flag to ture
                 speedNode!.removeAllActions()
                 speedChosen = true
             }
@@ -601,7 +719,6 @@ extension AdventureScene2{
             if nodesArray.first?.name == "backButton"{
                 if pause == false {
                     pause = true
-                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
                     backOrReplay = "back"
                     alertNode.zPosition = 5
                     alertLabelNode.text = "Do you want to go back to levels?"
@@ -612,7 +729,7 @@ extension AdventureScene2{
             }
             if nodesArray.first?.name == "pauseButton"{
                 //pause all variables about time.
-                if pause == false{
+                if pause == false && finishGame == false{
                     pause = true
                     pauseButtonNode?.zPosition = -2
                     pauseButtonNode!.alpha = 0
@@ -628,10 +745,8 @@ extension AdventureScene2{
             }
             if nodesArray.first?.name == "resumeButton"{
                 //pause all variables about time.
-                if pause == true{
+                if pause == true && finishGame == false{
                     pause = false
-                    //                    timer.invalidate()
-                    //                    showAlertResume(withTitle: "Alert", message: "Do you want resume now?")
                     pauseButtonNode?.zPosition = 2
                     resumeButtonNode?.zPosition = -2
                     resumeButtonNode?.removeAllActions()
@@ -643,8 +758,6 @@ extension AdventureScene2{
                 if pause == false {
                     pause = true
                     backOrReplay = "replay"
-                    
-                    //                showAlertBack(withTitle: "Alert title", message: "Alert message")
                     alertNode.zPosition = 5
                     alertLabelNode.text = "Do you want to replay this game?"
                     alertLabelNode.zPosition = 6
@@ -653,7 +766,7 @@ extension AdventureScene2{
                 }
             }
             if nodesArray.first?.name == "questionButton"{
-                
+                if finishGame == true {return}
                 if tutorialShow == false {
                     //show tutorial
                     if pause == true {return}
@@ -681,65 +794,21 @@ extension AdventureScene2{
                     }
                 }
             }
+            
+            if nodesArray.first?.name == "gotItButton"{
+                congratulationNode!.zPosition = -3
+                gotItButtonNode?.zPosition = -3
+                (self.childNode(withName: "badge1") as! SKSpriteNode).removeFromParent()
+                if self.timerCount <= 5{
+                    (self.childNode(withName: "badge2") as! SKSpriteNode).removeFromParent()
+                }
+            }
         }
     }
 }
 
-// Alert Action
-extension AdventureScene2{
-    func showAlertResume(withTitle title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "Resume", style: .cancel) { _ in
-            self.pause = false
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
-    }
-    
-    func showAlertBack(withTitle title: String, message: String) {
-        
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            self.pause = false
-        }
-        alertController.addAction(cancelAction)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
-            
-            let gameLevelScene = GameLevelScene(fileNamed: "GameLevelScene")
-            gameLevelScene?.scaleMode = .aspectFill
-            self.view?.presentScene(gameLevelScene!)
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
-    }
-    
-    func showAlertReplay(withTitle title: String, message: String){
-        
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            self.pause = false
-        }
-        alertController.addAction(cancelAction)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
-            
-            let adventureScene2 = AdventureScene2(fileNamed: "AdventureScene2")
-            adventureScene2?.scaleMode = .aspectFill
-            self.view?.presentScene(adventureScene2!)
-        }
-        alertController.addAction(okAction)
-        
-        view?.window?.rootViewController?.present(alertController, animated: true)
-    }
-}
 
-
+// functions for drawing the arrow
 extension UIBezierPath {
     func addArrow2(start: CGPoint, end: CGPoint, pointerLineLength: CGFloat, arrowAngle: CGFloat) {
         self.move(to: start)

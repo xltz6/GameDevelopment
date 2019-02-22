@@ -140,8 +140,8 @@
 		803EB3D42204B4F5000CA7AC /* SettingsScene */ = {
 			isa = PBXGroup;
 			children = (
-				803EB3D22204B4DB000CA7AC /* SettingsScene.swift */,
 				803EB3D02204B4C1000CA7AC /* SettingsScene.sks */,
+				803EB3D22204B4DB000CA7AC /* SettingsScene.swift */,
 			);
 			path = SettingsScene;
 			sourceTree = "<group>";

@@ -11,6 +11,7 @@ import GameplayKit
 
 class MenuScene: SKScene {
     var bgNode: SKSpriteNode!
+    var settingsButtonNode: SKSpriteNode!
     var adventureButtonNode: SKSpriteNode!
     var aboutButtonNode: SKSpriteNode!
     var achievementsButtonNode: SKSpriteNode!
@@ -23,22 +24,26 @@ class MenuScene: SKScene {
     
     override func didMove(to view: SKView) {
         
-        
         // Set SpriteNode and LabelNode to appropriate position
         adventureButtonNode = self.childNode(withName: "adventureButton") as? SKSpriteNode
-        adventureButtonNode.position = CGPoint(x: 0, y: adventureButtonNode.size.height + 20)
+        adventureButtonNode?.position = CGPoint(x: 0, y: adventureButtonNode.size.height/2 + 40 + adventureButtonNode.size.height)
         adventureButtonNode.zPosition = 2
 //        adventureButtonNode.setScale(1.2)
+        
+        settingsButtonNode = self.childNode(withName: "settingsButton") as? SKSpriteNode
+        settingsButtonNode?.position = CGPoint(x: 0, y: settingsButtonNode.size.height/2 + 20)
+        settingsButtonNode.zPosition = 2
+        
         aboutButtonNode = self.childNode(withName: "aboutButton") as? SKSpriteNode
-        aboutButtonNode.position = CGPoint(x: 0, y: -aboutButtonNode.size.height - 20)
+        aboutButtonNode?.position = CGPoint(x: 0, y: -aboutButtonNode.size.height/2 - aboutButtonNode.size.height - 20)
         aboutButtonNode.zPosition = 2
 //        aboutButtonNode.setScale(1.2)
         achievementsButtonNode = self.childNode(withName: "achievementsButton") as? SKSpriteNode
-        achievementsButtonNode.position = CGPoint(x: 0, y: 0)
+        achievementsButtonNode?.position = CGPoint(x: 0, y: -achievementsButtonNode.size.height/2)
         achievementsButtonNode.zPosition = 2
 //        achievementsButtonNode.setScale(1.2)
         soundButtonNode = self.childNode(withName: "soundNode") as? SKSpriteNode
-        soundButtonNode.position = CGPoint(x: 0, y: -aboutButtonNode.size.height - 40 - soundButtonNode.size.height)
+        soundButtonNode.position = CGPoint(x: 0, y:-achievementsButtonNode.size.height/2 - aboutButtonNode.size.height - 110)
         soundButtonNode.zPosition = 2
         
         
@@ -79,6 +84,11 @@ class MenuScene: SKScene {
                 gameLevelScene?.scaleMode = .aspectFill
                 self.view?.presentScene(gameLevelScene!)
                 
+            }
+            else if nodesArray.first?.name == "settingsButton"{
+                let settingsScene = SettingsScene(fileNamed: "SettingsScene")
+                settingsScene?.scaleMode = .aspectFill
+                self.view?.presentScene(settingsScene!)
             }
             else if nodesArray.first?.name == "aboutButton"{
                 print("Here is about us!!!")
